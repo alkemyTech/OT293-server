@@ -1,14 +1,15 @@
-const bcrypt = require('bcrypt');
-// const sgMail = require('@sendgrid/mail');
 const User = require('../models/user')
+const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+// const sgMail = require('@sendgrid/mail');
 
 // const sendMail = (emailUsuario) => {
 //   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 //   const message = {
 //     to: emailUsuario, // Para usuario
-//     from: 'ong@gmail.com', // Email verificado en sendGrid.
-//     subject: '¡Bienvenido a ...!',
-//     text: '...'
+//     from: 'ong@gmail.com', // Email verificado en sendGrid. (Consultar email a verificar)
+//     subject: '¡Bienvenido a ...!', // Consultar título del mensaje.
+//     text: '...' // Consultar texto a agregar.
 //   }
 //   sgMail.send(message).then(() => {
 //     console.log('Email de bienvenida enviado')
@@ -48,9 +49,16 @@ const userRegister = async (req, res) => {
     // Enviar email de bienvenida al nuevo usuario registrado.
     // sendMail(email);
 
+    // Crear token.
+    // const token = jwt.sign({ user_id: user.id, email }, "secret", { expiresIn: "10h" });
+
+    // Guardar token.
+    // user.token = token;
+
     // Devolver nuevo usuario.
     res.status(201).json({
-      "user": user
+      "user": user //,
+      // "token": token
     })
   } catch (err) {
     console.log(err);
@@ -71,6 +79,11 @@ const userLogin = async (req, res) => {
     const user = await User.findOne({ where: { email: email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      // Crear token.
+      // const token = jwt.sign({ user_id: user.id, email }, "secret", { expiresIn: "10h" });
+
+      // Guardar token.
+      // user.token = token;
 
       // Devolver user.
       res.status(201).json({
