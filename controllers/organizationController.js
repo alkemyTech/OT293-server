@@ -9,6 +9,10 @@ class OrganizationController {
 
   }
 
+  static async create(req, res, next) {
+
+  }
+
   static async update(req, res, next) {
 
   }
