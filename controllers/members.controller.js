@@ -1,23 +1,29 @@
-export const getMembers = async (req, res, next) => {
-  res.send("respond with all");
-};
+"use strict";
 
-export const getMemberById = async (req, res, next) => {
-  res.send("respond with only one");
-};
+export class MemberController {
+  constructor() {}
 
-export const createMember = async (req, res, next) => {
-  res.send("respond with create");
-};
+  // Get all members
+  // Method: GET
+  static async getMembers(req, res) {}
 
-export const updateMember = async (req, res, next) => {
-  res.send("respond with update");
-};
+  // Get member by id
+  // Method: GET
+  static async getMemberById(req, res) {}
 
-export const partialUpdateMember = async (req, res, next) => {
-  res.send("respond with partial update");
-};
+  // Create new member
+  // Method: POST
+  static async createMember(req, res) {}
 
-export const deleteMember = async (req, res, next) => {
-  res.send("respond with delete");
-};
+  // Update all member data
+  // Method: PUT
+  static async updateMember(req, res) {}
+
+  // Partially update member data
+  // Method: PATCH
+  static async partialUpdateMember(req, res) {}
+
+  // Delete member from DB
+  // Method: DELETE
+  static async deleteMember(req, res) {}
+}
