@@ -12,8 +12,6 @@ function auth(req, res, next) {
 
   const token = req.get('Authorization');
 
-  console.log(token);
-
   if(!token) {
     res.status(403).json({message: 'Unauthenticated'});
     return;
