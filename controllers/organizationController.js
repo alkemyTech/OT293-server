@@ -1,8 +1,15 @@
-const { Organization } = require('../models/organization');
+const db = require('../models/index');
 
 class OrganizationController {
   static async findAll(req, res, next) {
-
+    try {
+      const organizations = await db.Organization.findAll({
+        attributes: ['name', 'image', 'phone', 'address'],
+      });
+      res.json(organizations);
+    } catch (e) {
+      next(e);
+    }
   }
 
   static async findOne(req, res, next) {
@@ -21,3 +28,5 @@ class OrganizationController {
 
   }
 }
+
+module.exports = OrganizationController;
