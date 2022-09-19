@@ -27,20 +27,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter)
 // catch 404 and forward to error handler
-<<<<<<< HEAD
-app.use(function (req, res, next) {
-=======
 app.use((req, res, next) => {
->>>>>>> b4c3d07b5ac025fa8649d036e87331378eb11f08
   next(createError(404));
 });
 
 // error handler
-<<<<<<< HEAD
-app.use(function (err, req, res, next) {
-=======
 app.use((err, req, res, next) => {
->>>>>>> b4c3d07b5ac025fa8649d036e87331378eb11f08
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

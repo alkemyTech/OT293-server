@@ -44,7 +44,7 @@ const userRegister = async (req, res) => {
       email: email.toLowerCase(), // Convertir el mail a minúsculas.
       image,
       password: encryptedPassword,
-      roleId: 2
+      roleId: 2 // Dejo este comentario para cuando hagas code review. Está definido el rol 1 para admin y rol 2 para usuario, por eso por defecto se va a registrar con roleid 2
     });
 
     // Enviar email de bienvenida al nuevo usuario registrado.
