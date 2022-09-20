@@ -1,3 +1,4 @@
+
 const db = require('../models/index');
 
 class OrganizationController {
@@ -30,3 +31,4 @@ class OrganizationController {
 }
 
 module.exports = OrganizationController;
+
