@@ -1,6 +1,5 @@
 "use strict";
-
-export class ActivitiesController {
+class ActivitiesController {
     constructor() { }
 
     // Get all Activitiess
@@ -27,3 +26,5 @@ export class ActivitiesController {
     // Method: DELETE
     static async deleteActivities(req, res) { }
 }
+
+module.exports = ActivitiesController;
