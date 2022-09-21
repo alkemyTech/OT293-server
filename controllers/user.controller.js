@@ -1,5 +1,7 @@
 "use strict";
 
+const db = require('../models/index');
+
 class UserController {
     constructor() { }
 
@@ -25,7 +27,18 @@ class UserController {
 
     // Delete User from DB
     // Method: DELETE
-    static async deleteUser(req, res) { }
+    static async deleteUser(req, res) {
+
+        const { id } = req.params;
+
+        const deletedUser = await db.User.destroy({
+            where: {
+                id
+            }
+        });
+
+        res.json({data: {id: deletedUser}});
+    }
 }
 
 module.exports = UserController;
