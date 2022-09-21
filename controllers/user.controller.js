@@ -1,6 +1,6 @@
 "use strict";
 
-export class UserController {
+class UserController {
     constructor() { }
 
     // Get all user
@@ -27,3 +27,5 @@ export class UserController {
     // Method: DELETE
     static async deleteUser(req, res) { }
 }
+
+module.exports = UserController;
