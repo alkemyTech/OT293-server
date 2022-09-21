@@ -27,17 +27,21 @@ class UserController {
 
     // Delete User from DB
     // Method: DELETE
-    static async deleteUser(req, res) {
+    static async deleteUser(req, res, next) {
 
-        const { id } = req.params;
+        try {
+            const { id } = req.params;
 
-        const deletedUser = await db.User.destroy({
-            where: {
-                id
-            }
-        });
+            const deletedUser = await db.User.destroy({
+                where: {
+                    id
+                }
+            });
 
-        res.json({data: {id: deletedUser}});
+            res.json({ data: { id: deletedUser } });
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
