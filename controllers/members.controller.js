@@ -1,6 +1,6 @@
 "use strict";
 
-export class MemberController {
+class MemberController {
   constructor() {}
 
   // Get all members
@@ -27,3 +27,5 @@ export class MemberController {
   // Method: DELETE
   static async deleteMember(req, res) {}
 }
+
+module.exports = MemberController;
