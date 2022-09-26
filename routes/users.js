@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 router.patch('/:id', 
   ownership,
   checkSchema(updateUserSchema),
-  UserController.updateUser,
+  UserController.partialUpdateUser,
 );
 
 router.delete('/:id', UserController.deleteUser);

@@ -21,8 +21,12 @@ class UserController {
 
     // Update all User data
     // Method: PUT
-    static async updateUser(req, res) { 
+    static async updateUser(req, res) { }
 
+    // Partially update User data
+    // Method: PATCH
+    static async partialUpdateUser(req, res) { 
+        
         try {
 
             const errors = validationResult(req);
@@ -54,12 +58,7 @@ class UserController {
         } catch (error) {
             res.status(500).json({message: 'Internal server error'});
         }
-
     }
-
-    // Partially update User data
-    // Method: PATCH
-    static async partialUpdateUser(req, res) { }
 
     // Delete User from DB
     // Method: DELETE
