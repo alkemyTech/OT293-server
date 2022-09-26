@@ -2,14 +2,18 @@ const db = require('../models/index')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
+const welcomeEmail = require('../templates/welcomeEmail')
 
 const sendMail = (emailUsuario) => {
+  const title = '¡Bienvenid@s a nuestra ONG!'
+  const subTitle = 'Cualquier duda que tengas, no dudes en contactarnos'
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const message = {
     to: emailUsuario, // Para usuario
     from: 'lucianoscaglione21@gmail.com', // Email verificado en sendGrid.
-    subject: '¡Bienvenido a nuestra ONG!', // Título
-    text: 'Gracias por registarte, ¡Esperemos que andes bien!' // Texto a agregar.
+    subject: '¡Hola!', // Título
+    text: 'prueba', // Texto a agregar.
+    html: welcomeEmail(title, subTitle, '')
   }
   sgMail.send(message).then(() => {
     console.log('Email de bienvenida enviado')
