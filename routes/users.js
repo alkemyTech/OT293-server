@@ -1,7 +1,7 @@
 const express = require('express');
 
 const UserController = require('../controllers/user.controller');
-const verifyAdmin = require('../middlewares/admin');
+const { verifyAdmin } = require('../middlewares/admin');
 
 const router = express.Router();
 
@@ -9,7 +9,6 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
   res.send('respond with a resource');
 });
-
 
 router.get('/', verifyAdmin, UserController.getUsers);
 router.delete('/:id', UserController.deleteUser);

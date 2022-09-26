@@ -1,3 +1,5 @@
+const db = require('../models/index');
+
 class ActivitiesController {
   constructor() { }
 
@@ -16,7 +18,30 @@ class ActivitiesController {
   // Update all Activities data
   // Method: PUT
   static async updateActivities(req, res) {
-    // aca agregar el update por id
+    let activity = {};
+    const { id } = req.params;
+    const { name, content, image } = req.body;
+
+    try {
+      activity = await db.Activities.findByPk(id);
+      if (!activity) {
+        return res.status(400).json({
+          msg: 'Activity does not exist',
+        });
+      }
+      activity.name = name;
+      activity.content = content;
+      activity.image = image;
+      const savedActivity = await activity.save();
+      return res.status(200).json({
+        msg: 'Activity was updated successfully',
+        savedActivity,
+      });
+    } catch (e) {
+      return res.status(400).json({
+        msg: `${e.message}`,
+      });
+    }
   }
 
   // Partially update Activities data
