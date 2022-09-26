@@ -1,4 +1,5 @@
 const db = require('../models/index');
+const Jwt = require('../utils/jwt');
 
 class UserController {
   constructor() { }
@@ -20,7 +21,14 @@ class UserController {
 
   // Create new User
   // Method: POST
-  static async createUser(req, res) { }
+  static async createUser(req, res, next) {
+    try {
+      const token = await Jwt.tokenSign({ ...req.body });
+      res.json({ data: { token } });
+    } catch (e) {
+      next(e);
+    }
+  }
 
   // Update all User data
   // Method: PUT
