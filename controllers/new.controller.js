@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../models/index');
 class NewController {
 
   constructor() {
@@ -25,7 +26,6 @@ class NewController {
    */
 
   static async findOne(req, res) {
-
   }
 
   /**
@@ -46,8 +46,15 @@ class NewController {
    * @param {Express.Response} res 
    */
 
-  static async update(req, res) {
-
+  static async update(req, res, next) {
+    const { id } = req.params;
+    const changes = req.body;
+    try {
+      const findNew = await db.New.findByPk(id)
+      if(!findNew) res.status(404).json({data: 'New Not Found'});
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
