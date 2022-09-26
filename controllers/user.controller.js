@@ -55,6 +55,32 @@ class UserController {
       next(error);
     }
   }
+
+  static async getProfile(req, res) {
+    const { authorization } = req.headers;
+    if (!authorization) return res.status(401).json({ msg: 'Unauthorized' });
+
+    try {
+      const token = authorization.split(' ').pop();
+      if (!token) {
+        return res.status(401).json({ error: 'token missing or invalid' });
+      }
+      const decodedToken = Jwt.verifyToken(token);
+
+      if (decodedToken === null) {
+        return res
+          .status(400)
+          .json({ msg: 'Token missing or invalid.' });
+      }
+      const { id } = decodedToken;
+      const userProfile = await db.User.findByPk(id);
+      return res.status(200).json(userProfile);
+    } catch (e) {
+      return res.status(400).json({
+        msg: `${e.message}`,
+      });
+    }
+  }
 }
 
 module.exports = UserController;
