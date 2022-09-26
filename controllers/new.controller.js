@@ -1,4 +1,4 @@
-const News = require('../models/new');
+const db = require('../models/index');
 
 class NewController {
   constructor() {
@@ -26,7 +26,7 @@ class NewController {
   static async findOne(req, res) {
     const { id } = req.params;
     try {
-      const newsDetail = await News.findByPk(id);
+      const newsDetail = await db.New.findByPk(id);
       res.status(200).json({ data: newsDetail });
     } catch (e) {
       res.status(400).json({ message: `${e.message}` });
