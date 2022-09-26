@@ -12,7 +12,7 @@ const sendMail = (emailUsuario) => {
     to: emailUsuario, // Para usuario
     from: 'lucianoscaglione21@gmail.com', // Email verificado en sendGrid.
     subject: '¡Hola!', // Título
-    text: 'prueba', // Texto a agregar.
+    text: 'prueba', // Texto a agregar
     html: welcomeEmail(title, subTitle, '')
   }
   sgMail.send(message).then(() => {
