@@ -6,7 +6,14 @@ class UserController {
 
   // Get all user
   // Method: GET
-  static async getUsers(req, res) { }
+  static async getUsers(req, res, next) {
+    try {
+      const users = await db.User.findAll();
+      res.json({ data: users });
+    } catch (e) {
+      next(e);
+    }
+  }
 
   // Get User by id
   // Method: GET
