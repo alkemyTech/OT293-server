@@ -4,15 +4,20 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
 const categoriesRouter = require('./routes/categories');
+const fileUploadRouter = require('./routes/upload');
 
 const app = express();
 app.use(cors());
+
+// File uploader -> amazon s3 sdk
+app.use(fileUpload());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +33,9 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/organization', organizationsRouter);
 app.use('/categories', categoriesRouter);
+
+// Router to upload files
+app.use('/files', fileUploadRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
