@@ -1,30 +1,35 @@
-"use strict";
-class ActivitiesController {
-    constructor() { }
+const { Activities } = require('../models/index');
 
-    // Get all Activitiess
-    // Method: GET
-    static async getActivities(req, res) { }
+  const getActivities = async (req, res) => { };
 
-    // Get Activities by id
-    // Method: GET
-    static async getActivitiesById(req, res) { }
+  const getActivitiesById = async (req, res) => { };
 
-    // Create new Activities
-    // Method: POST
-    static async createActivities(req, res) { }
+  const createActivities = async (req, res) => { 
+    try {
+      const { name, content, image } = req.body;
+      if (!(name && content)) { return res.status(404).send("Name y Content obligatorios") };
+      const container = await Activities.findOne({ where: { name: name.toLowerCase() } });
+      if (!container) {
+      const createActivity = await Activities.create({
+        name: name.toLowerCase(),
+        content,
+        image
+      });
+      createActivity ? res.send(createActivity) : res.status(404).send('Ocurrió un error durante la creación');
+    } else {
+      res.status(404).send('Ya existe una actividad con ese nombre, pruebe con otro');
+    }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    // Update all Activities data
-    // Method: PUT
-    static async updateActivities(req, res) { }
+  const updateActivities = async (req, res) => { };
 
-    // Partially update Activities data
-    // Method: PATCH
-    static async partialUpdateActivities(req, res) { }
+  const partialUpdateActivities = async (req, res) => { };
 
-    // Delete Activities from DB
-    // Method: DELETE
-    static async deleteActivities(req, res) { }
-}
+  const deleteActivities = async (req, res) => { };
 
-module.exports = ActivitiesController;
+module.exports = {
+  createActivities
+};
