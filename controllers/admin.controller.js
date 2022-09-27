@@ -1,4 +1,4 @@
-const {User} = require('../models/user');
+const User = require('../models/user');
 
 const verifyAdmin = async (req, res, next) => {
     const user = await User.findById(req.roleId)
