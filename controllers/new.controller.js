@@ -1,5 +1,5 @@
 'use strict';
-
+const New = require('../models/new');
 class NewController {
 
   constructor() {
@@ -57,10 +57,19 @@ class NewController {
    * @param {Express.Response} res 
    */
 
-  static async delete(req, res) {
-
+  static async deleteNew(req, res) {
+    try {
+      const {id} = req.params;
+  
+      const deletedNew = await New.destroy({
+        where: { id }
+      });
+  
+      res.json({ data: { id: deletedNew } });   
+    } catch (error) {
+      console.log(error.message)
+    }
   }
-
 }
 
 module.exports = NewController;
