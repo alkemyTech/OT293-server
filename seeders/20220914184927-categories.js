@@ -2,15 +2,13 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
+    await queryInterface.bulkInsert('Categories', [{
+      name: 'Prueba',
+      description: 'Prueba',
+      image: 'https://www.designevo.com/res/templates/thumb_small/colorful-hand-and-warm-community.png',
+      createdAt: new Date,
+      updatedAt: new Date
+    }], {});
   },
 
   down: async (queryInterface, Sequelize) => {
