@@ -1,7 +1,19 @@
 const db = require('../models/index');
 
 class CategoriesController {
+
   static async findAll(req, res, next) {
+
+    try {
+      const categories = await db.Categories.findAll({
+        attributes: ['name']
+      });
+
+      res.json({data: categories});
+
+    } catch (error) {
+      next(error);
+    }
   }
 
   static async findOne(req, res, next) {
@@ -9,7 +21,31 @@ class CategoriesController {
   }
 
   static async create(req, res, next) {
-
+    try {
+      // Obtener información.
+      const { name, description, image } = req.body;
+      console.log("le llega: ", req.body)
+      // Validar name
+      if (!name) { res.status(404).send("La categoría debe contener un nombre obligatoriamente") };
+  
+      //  Buscar categoría
+      const container = await db.Categories.findOne({ where: { name: name.toLowerCase() } });
+  
+      // Si no existe el nombre, crear categoría
+      if (!container) {
+        const newCategory = await db.Categories.create({  
+            name: name.toLowerCase(),
+            description,
+            image
+         })
+         res.send("Categoría creada correctamente!")
+      } else {
+      // Si existe el nombre
+        res.status(404).send("Ya existe una categoría con ese nombre, intente con otra.")
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   static async update(req, res, next) {
