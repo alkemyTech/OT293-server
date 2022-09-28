@@ -14,12 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Testimonials.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-    },
+    // id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     image: DataTypes.STRING,
     content: DataTypes.STRING,
