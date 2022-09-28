@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Testimonials.init({
-    id: DataTypes.INTEGER,
+    // id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     image: DataTypes.STRING,
     content: DataTypes.STRING,
