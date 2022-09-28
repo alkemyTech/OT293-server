@@ -10,8 +10,7 @@ router.get('/', (req, res, next) => {
   res.send('respond with a resource');
 });
 
-
-router.get('/', verifyAdmin, UserController.getUsers);
+router.get('/', UserController.getUsers);
 router.delete('/:id', UserController.deleteUser);
 router.post('/register', UserController.createUser);
 
