@@ -11,12 +11,9 @@ const UserController = require('../controllers/user.controller');
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.send('respond with a resource');
-});
 
+router.delete('/:id', UserController.deleteUser);
 router.get('/', verifyAdmin, UserController.getUsers);
-
 router.post('/register', UserController.createUser);
 
 router.patch(

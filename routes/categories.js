@@ -1,5 +1,3 @@
-const express = require('express');
-
 const router = express.Router();
 const CategoriesController = require('../controllers/categories.controller');
 
@@ -14,5 +12,6 @@ router.get(
 );
 
 router.delete('/:id/', verifyAdmin, CategoriesController.delete);
+router.get('/categories/:id', verifyAdmin, CategoriesController.findOne);
 
 module.exports = router;
