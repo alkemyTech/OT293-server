@@ -15,7 +15,9 @@ router.get('/',
     auth,
     verifyAdmin,
     CategoriesController.findAll
-)
+);
+
+router.get('/categories/:id', verifyAdmin, CategoriesController.findOne);
 
 router.put('/:id', 
     auth,
