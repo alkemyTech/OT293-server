@@ -1,10 +1,9 @@
 const express = require("express");
 
+const MemberController = require("../controllers/members.controller");
+
 const router = express.Router();
 
-router.delete("/:id", async (req, res, next) => {
-  const { id } = req.params;
-  res.json({ id });
-});
+router.delete("/:id", MemberController.deleteMember);
 
 module.exports = router;
