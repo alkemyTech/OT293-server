@@ -17,7 +17,10 @@ const app = express();
 app.use(cors());
 
 // File uploader -> amazon s3 sdk
-app.use(fileUpload());
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: './uploads',
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
