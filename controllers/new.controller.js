@@ -1,5 +1,6 @@
 const db = require("../models/index");
 
+const db = require('../models/index');
 class NewController {
   constructor() {}
 
@@ -45,7 +46,19 @@ class NewController {
    * @param {Express.Response} res
    */
 
-  static async update(req, res) {}
+  static async update(req, res, next) {
+    const { id } = req.params;
+    const changes = req.body;
+    try {
+      const findNew = await db.New.findByPk(id)
+      if(!findNew) res.status(404).json({data: 'New Not Found'});
+      const updateNew = await findNew.update(changes);
+      delete updateNew.dataValues.deletedAt  //Elimina el envio de cuando fue eliminado al cliente.
+      res.status(200).json({msg: 'Novedad Actualizada con exito', data: updateNew})
+    } catch (error) {
+      next(error)
+    }
+  }
 
   /**
    * Delete a resource from the database
