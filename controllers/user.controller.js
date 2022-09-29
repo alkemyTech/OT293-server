@@ -1,4 +1,6 @@
 const db = require('../models/index');
+const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
 const Jwt = require('../utils/jwt');
 
 class UserController {
@@ -36,7 +38,39 @@ class UserController {
 
   // Partially update User data
   // Method: PATCH
-  static async partialUpdateUser(req, res) { }
+  static async partialUpdateUser(req, res) { 
+    try {
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      const user = await db.User.findByPk(id);
+
+      if(!user) {
+          return res.status(404).json({message: 'Not found'});
+      }
+
+      // If request has password
+
+      const { password } = req.body;
+
+      if(password) { 
+          req.body.password = await bcrypt.hash(password, 10);
+      }
+
+      const updatedUser = await user.update(req.body);
+
+      res.json({data: updatedUser});
+      
+    } catch (e) {
+      next(e);
+    }
+  }
 
   // Delete User from DB
   // Method: DELETE

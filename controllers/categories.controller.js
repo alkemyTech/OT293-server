@@ -1,7 +1,19 @@
 const db = require('../models/index');
 
 class CategoriesController {
+
   static async findAll(req, res, next) {
+
+    try {
+      const categories = await db.Categories.findAll({
+        attributes: ['name']
+      });
+
+      res.json({data: categories});
+
+    } catch (error) {
+      next(error);
+    }
   }
 
   static async findOne(req, res, next) {
