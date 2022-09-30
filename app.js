@@ -10,8 +10,12 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
+const activitiesRouter = require('./routes/activities');
+const newsRouter = require('./routes/news');
 const categoriesRouter = require('./routes/categories');
 const fileUploadRouter = require('./routes/upload');
+const authRouter = require('./routes/auth');
+const slidesRouter = require('./routes/slides');
 
 const app = express();
 app.use(cors());
@@ -35,7 +39,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/organization', organizationsRouter);
+app.use('/activities', activitiesRouter);
+app.use('/news', newsRouter);
 app.use('/categories', categoriesRouter);
+app.use('/auth', authRouter);
+app.use('/slides', slidesRouter);
 
 // Router to upload files
 app.use('/files', fileUploadRouter);
