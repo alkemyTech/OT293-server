@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Activity = require('../controllers/activities.controller')
+const { verifyAdmin } = require('../middlewares/admin');
+const ActivitiesController = require('../controllers/activities.controller');
 
-router.post('/', Activity.createActivities)
+router.get('/:id', verifyAdmin, ActivitiesController.updateActivities);
+router.post('/', verifyAdmin, ActivitiesController.createActivities);
+router.put('/:id', verifyAdmin, ActivitiesController.updateActivities);
 
-module.exports = router
+module.exports = router;

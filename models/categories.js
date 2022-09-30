@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
   }, {
     sequelize,
-    modelName: 'Categories'
+    modelName: 'Categories',
   });
   return Categories;
 };
