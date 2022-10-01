@@ -1,4 +1,4 @@
-"use strict";
+const db = require("../models/index");
 
 class MemberController {
   constructor() {}
@@ -13,7 +13,26 @@ class MemberController {
 
   // Create new member
   // Method: POST
-  static async createMember(req, res) {}
+  static async createMember(req, res) {
+    try {
+      const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
+      if (!(name && image)) { 
+        res.status(404).send('Campos obligatorios') 
+      } else {
+        const createMember = await db.Member.create({ 
+          name,
+          facebookUrl, 
+          instagramUrl, 
+          linkedinUrl, 
+          image, 
+          description 
+         })
+        res.send("Miembro creado correctamente")
+      }
+    } catch (error) {
+      console.log(error) 
+    }
+  }
 
   // Update all member data
   // Method: PUT
