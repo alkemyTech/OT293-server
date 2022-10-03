@@ -5,7 +5,21 @@ class SlidesController {
   }
 
   static async findOne(req, res, next) {
+    try {
 
+      const { id } = req.params;
+
+      const slide = await db.Slide.findByPk(id);
+
+      if(!slide) {
+        return res.status(404).json({message: 'Slide not found'});
+      }
+
+      res.json({data: slide});
+
+    } catch (e) {
+      next(e);
+    }
   }
 
   static async create(req, res, next) {
