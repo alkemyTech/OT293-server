@@ -4,7 +4,7 @@ const express = require('express');
 const auth = require('../middlewares/auth');
 const verifyAdmin = require('../middlewares/admin');
 
-const SlideController = require('../controllers/slide.controller');
+const SlideController = require('../controllers/slides.controller');
 
 const router = express.Router();
 
@@ -13,5 +13,7 @@ router.get('/:id',
     verifyAdmin,
     SlideController.findOne
 );
+
+router.delete('/:id', verifyAdmin, SlideController.delete);
 
 module.exports = router;
