@@ -16,4 +16,9 @@ router.delete(
   MemberController.deleteMember
 );
 
+router.get('/', 
+  verifyAdmin,
+  MemberController.getMembers()
+);
+
 module.exports = router;

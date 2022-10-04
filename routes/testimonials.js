@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const verifyAdmin = require('../middlewares/admin');
-const TestimonialsController = require('../controllers/Testimonials');
+const TestimonialsControllers = require('../controllers/Testimonials');
+const TestimonialsController = require('../controllers/testimonials.controllers.js');
 
-router.delete('/:id', verifyAdmin, TestimonialsController.deleteTestimonials);
+router.post('/', verifyAdmin, TestimonialsController.create)
+router.put('/:id', verifyAdmin, TestimonialsController.update)
+router.delete('/:id', verifyAdmin, TestimonialsControllers.deleteTestimonials);
 
 module.exports = router;
