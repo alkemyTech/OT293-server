@@ -3,11 +3,10 @@ const express = require('express');
 //Middlewares
 const auth = require('../middlewares/auth');
 const verifyAdmin = require('../middlewares/admin');
-
 const SlideController = require('../controllers/slides.controller');
-
 const router = express.Router();
 
+router.get('/', verifyAdmin, SlidesController.findAll);
 router.get('/:id', 
     auth,
     verifyAdmin,

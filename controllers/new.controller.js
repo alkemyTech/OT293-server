@@ -76,6 +76,7 @@ class NewController {
    * @param {Express.Response} res 
    */
 
+
   static async deleteNew(req, res) {
     try {
       const {id} = req.params;
@@ -89,6 +90,5 @@ class NewController {
       console.log(error.message)
     }
   }
-}
 
 module.exports = NewController;
