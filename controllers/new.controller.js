@@ -77,7 +77,7 @@ class NewController {
    */
 
 
-  static async deleteNew(req, res) {
+  static async delete(req, res) {
     try {
       const {id} = req.params;
   
@@ -90,5 +90,6 @@ class NewController {
       console.log(error.message)
     }
   }
+}
 
 module.exports = NewController;
