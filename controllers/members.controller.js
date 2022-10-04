@@ -6,7 +6,15 @@ class MemberController {
 
   // Get all members
   // Method: GET
-  static async getMembers(req, res) {}
+  static async getMembers(req, res, next) {
+    try {
+      const members = await db.db.Member.findAll();
+      res.status(200).json({data: members})
+    } catch (err) {
+      next(err)
+    }
+    
+  }
 
   // Get member by id
   // Method: GET
