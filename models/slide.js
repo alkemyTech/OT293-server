@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     imageUrl: {
-      allowNull: true,
       type: DataTypes.STRING,
       field: "image_url",
     },
@@ -28,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       field: "organization_id",
     },
     deletedAt: {
+      allowNull: true,
       type: DataTypes.DATE,
       field: "deleted_at",
     },
