@@ -17,5 +17,5 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Contacts',
     paranoid: true
   });
-  return contacts;
+  return Contacts;
 };
