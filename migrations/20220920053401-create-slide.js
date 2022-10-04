@@ -15,7 +15,6 @@ module.exports = {
         type: Sequelize.STRING
       },
       imageUrl: {
-        allowNull: true,
         type: Sequelize.STRING,
         field: "image_url",
       },
@@ -30,6 +29,7 @@ module.exports = {
         onDelete: 'SET NULL'
       },
       deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE,
         field: "deleted_at",
       },

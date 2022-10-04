@@ -14,5 +14,9 @@ router.delete(
   dataValidator,
   MemberController.deleteMember
 );
+router.get('/', 
+  verifyAdmin,
+  MemberController.getMembers()
+);
 
 module.exports = router;
