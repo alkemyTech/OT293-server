@@ -12,10 +12,13 @@ const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
 const activitiesRouter = require('./routes/activities');
 const newsRouter = require('./routes/news');
+const membersRouter = require('./routes/members')
 const categoriesRouter = require('./routes/categories');
 const fileUploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
+const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
+
 
 const app = express();
 app.use(cors());
@@ -42,9 +45,11 @@ app.use('/organization', organizationsRouter);
 app.use('/activities', activitiesRouter);
 app.use('/news', newsRouter);
 app.use('/categories', categoriesRouter);
-app.use('/activities', activitiesRouter);
 app.use('/auth', authRouter);
+app.use('/backoffice', backOfficeRouter);
 app.use('/slides', slidesRouter);
+app.use('/members', membersRouter);
+
 
 // Router to upload files
 app.use('/files', fileUploadRouter);

@@ -1,4 +1,5 @@
 "use strict";
+const db = require("../models/index");
 
 class MemberController {
   constructor() {}
@@ -25,7 +26,21 @@ class MemberController {
 
   // Delete member from DB
   // Method: DELETE
-  static async deleteMember(req, res) {}
+  static async deleteMember(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const member = await db.Member.findByPk(id);
+      if (!member) {
+        res.status(404).json({ error: "member Not Found" });
+      }
+
+      await member.destroy();
+      res.json({ deleted: true });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = MemberController;

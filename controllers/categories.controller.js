@@ -1,5 +1,7 @@
 const db = require("../models/index");
 
+const { validationResult } = require('express-validator');
+
 class CategoriesController {
   static async findAll(req, res, next) {
     try {
@@ -62,7 +64,33 @@ class CategoriesController {
     }
   }
 
-  static async update(req, res, next) {}
+  static async update(req, res, next) {
+
+    try {
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      const category = await db.Categories.findByPk(id);
+
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+
+      const categoryUpdated = await category.update(req.body);
+
+      res.json({ data: categoryUpdated });
+
+    } catch (e) {
+      next(e)
+    }
+
+  }
 
   static async delete(req, res, next) {
     try {
@@ -85,5 +113,6 @@ class CategoriesController {
     }
   }
 }
+
 
 module.exports = CategoriesController;
