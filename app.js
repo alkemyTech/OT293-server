@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
@@ -13,7 +14,7 @@ const activitiesRouter = require('./routes/activities');
 const newsRouter = require('./routes/news');
 const membersRouter = require('./routes/members')
 const categoriesRouter = require('./routes/categories');
-const activitiesRouter = require('./routes/activities');
+const fileUploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
 const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
@@ -21,6 +22,12 @@ const slidesRouter = require('./routes/slides');
 
 const app = express();
 app.use(cors());
+
+// File uploader -> amazon s3 sdk
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: './uploads',
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +50,9 @@ app.use('/backoffice', backOfficeRouter);
 app.use('/slides', slidesRouter);
 app.use('/members', membersRouter);
 
+
+// Router to upload files
+app.use('/files', fileUploadRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
