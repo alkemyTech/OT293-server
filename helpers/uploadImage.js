@@ -1,16 +1,10 @@
-const { S3Client ,PutObjectCommand, ListObjectsCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { PutObjectCommand, ListObjectsCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
 const fs = require("fs");
 
 const config = require("../config/config").development;
 const client = require('../utils/s3');
-
-// const client = new S3Client({
-//     region: config.awsBucketRegion,
-//     credentials: {
-//         accessKeyId: config.awsAccessKey,
-//         secretAccessKey: config.awsSecretAccessKey
-//     }
-// });
 
 const uploadImage = async (file) => {
     console.log(file.tempFilePath)
@@ -22,8 +16,16 @@ const uploadImage = async (file) => {
     }
     const command = new PutObjectCommand(uploadParams);
     const result = await client.send(command);
-    console.log(result);
-    
+    const url = await getFileURL(file.name);
+    return url
+}
+
+const getFileURL = async(filename) => {
+    const command = new GetObjectCommand({
+        Bucket: config.awsBucketName,
+        Key: filename
+    });
+    return await getSignedUrl(client, command, {expiresIn: 3600})
 }
 
 module.exports = uploadImage;
