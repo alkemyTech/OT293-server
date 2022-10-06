@@ -11,7 +11,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
 const newsRouter = require('./routes/news');
-const membersRouter = require('./routes/members')
+const membersRouter = require('./routes/members');
 const categoriesRouter = require('./routes/categories');
 const fileUploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
@@ -52,10 +52,13 @@ app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
 app.use('/contacts', contactsRouter);
 
+<<<<<<< HEAD
+=======
 
 // Router to upload files
 app.use('/files', fileUploadRouter);
 
+>>>>>>> d20fe81fcf86918ba2f2bee7bef05aaf7bf23c48
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
