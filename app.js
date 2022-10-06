@@ -12,14 +12,13 @@ const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
 const activitiesRouter = require('./routes/activities');
 const newsRouter = require('./routes/news');
-const membersRouter = require('./routes/members')
+const membersRouter = require('./routes/members');
 const categoriesRouter = require('./routes/categories');
 const fileUploadRouter = require('./routes/upload');
 const authRouter = require('./routes/auth');
 const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
-
 
 const app = express();
 app.use(cors());
@@ -52,10 +51,13 @@ app.use('/slides', slidesRouter);
 app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
 
+<<<<<<< HEAD
+=======
 
 // Router to upload files
 app.use('/files', fileUploadRouter);
 
+>>>>>>> d20fe81fcf86918ba2f2bee7bef05aaf7bf23c48
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

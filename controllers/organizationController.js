@@ -1,10 +1,10 @@
-const db = require("../models/index");
+const db = require('../models/index');
 
 class OrganizationController {
   static async findAll(req, res, next) {
     try {
       const organizations = await db.Organization.findAll({
-        attributes: ["name", "image", "phone", "address"],
+        attributes: ['name', 'image', 'phone', 'address', 'facebook_url', 'linkedin_url', 'instagram_url'],
       });
       res.json(organizations);
     } catch (e) {
@@ -23,7 +23,7 @@ class OrganizationController {
 
       const organization = await db.Organization.findByPk(id);
       if (!organization) {
-        res.status(404).json({ error: "Organization Not Found" });
+        res.status(404).json({ error: 'Organization Not Found' });
       }
       await organization.update(body);
       res.json(organization);

@@ -1,24 +1,24 @@
-const express = require("express");
-const { checkSchema } = require("express-validator");
+const express = require('express');
+const { checkSchema } = require('express-validator');
 
-const SlidesController = require("../controllers/slides.controller");
-const { dataValidator } = require("../middlewares/validator");
-const { updateSlideSchema } = require("../schemas/slide.schema");
-const verifyAdmin = require("../middlewares/admin");
-const auth = require("../middlewares/auth");
+const SlidesController = require('../controllers/slides.controller');
+const { dataValidator } = require('../middlewares/validator');
+const { updateSlideSchema } = require('../schemas/slide.schema');
+const verifyAdmin = require('../middlewares/admin');
+const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get("/", verifyAdmin, SlidesController.findAll);
-router.get("/:id", auth, verifyAdmin, SlideController.findOne);
+router.get('/', verifyAdmin, SlidesController.findAll);
+router.get('/:id', auth, verifyAdmin, SlidesController.findOne);
 router.put(
-  "/:id",
+  '/:id',
   verifyAdmin,
   checkSchema(updateSlideSchema),
   dataValidator,
-  SlidesController.update
+  SlidesController.update,
 );
 
-router.delete("/:id", verifyAdmin, SlideController.delete);
+router.delete('/:id', verifyAdmin, SlidesController.delete);
 
 module.exports = router;
