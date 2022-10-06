@@ -5,18 +5,18 @@ class NewController {
 
   /**
    * List of resources
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res 
    */
 
   static async findAll(req, res) {}
 
   /**
    * Find one resource
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res 
    */
 
   static async findOne(req, res) {
@@ -31,9 +31,9 @@ class NewController {
 
   /**
    * Store a resource in database
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res 
    */
 
   static async store(req, res, next) {
@@ -48,9 +48,9 @@ class NewController {
 
   /**
    * Update a resourse from the database
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res 
    */
 
   static async update(req, res, next) {
@@ -65,18 +65,31 @@ class NewController {
         .status(200)
         .json({ msg: "Novedad Actualizada con exito", data: updateNew });
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
   /**
    * Delete a resource from the database
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res 
    */
 
-  static async delete(req, res) {}
+
+  static async delete(req, res) {
+    try {
+      const {id} = req.params;
+  
+      const deletedNew = await db.New.destroy({
+        where: { id }
+      });
+  
+      res.json({ data: { id: deletedNew } });   
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 }
 
 module.exports = NewController;

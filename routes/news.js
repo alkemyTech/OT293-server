@@ -18,5 +18,6 @@ router.post(
   dataValidator,
   NewController.store
 );
+router.delete('/news/:id', verifyAdmin, NewController.delete);
 
 module.exports = router;
