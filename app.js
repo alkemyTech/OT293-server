@@ -19,6 +19,7 @@ const authRouter = require('./routes/auth');
 const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
+const contactsRouter = require('./routes/contacts');
 
 const app = express();
 app.use(cors());
@@ -50,6 +51,7 @@ app.use('/backoffice', backOfficeRouter);
 app.use('/slides', slidesRouter);
 app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
+app.use('/contacts', contactsRouter);
 
 <<<<<<< HEAD
 =======
