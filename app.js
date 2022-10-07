@@ -7,6 +7,8 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
+const { swaggerDocs } = require('./routes/docs/swagger');
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
@@ -53,13 +55,12 @@ app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
 app.use('/contacts', contactsRouter);
 
-<<<<<<< HEAD
-=======
-
 // Router to upload files
 app.use('/files', fileUploadRouter);
 
->>>>>>> d20fe81fcf86918ba2f2bee7bef05aaf7bf23c48
+//Swagger
+swaggerDocs(app);
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
