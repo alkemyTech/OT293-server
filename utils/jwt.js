@@ -1,17 +1,19 @@
 const jwt = require('jsonwebtoken');
 
 class Jwt {
-  static async tokenSign(user) {
-    return jwt.sign(
-      {
-        id: user.id,
-        role: user.role,
-      },
+  static async signToken(user) {
+    const payload = {
+      sub: user.id,
+      role: user.roleId,
+    };
+    const token = jwt.sign(
+      payload,
       process.env.JWT_SECRET,
       {
         expiresIn: '2h',
       },
     );
+    return token;
   }
 
   static async verifyToken(token) {

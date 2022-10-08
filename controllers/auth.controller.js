@@ -29,7 +29,6 @@
 
 //     // Validar input del usuario.
 //     if (!(email && password && firstName && lastName)) {
-//       res.status(400).send("Se requiere rellenar todos los campos: nombre, apellido, email y password");
 //     }
 
 //     // Checkear si el usuario ya existe.
@@ -48,7 +47,8 @@
 //       email: email.toLowerCase(), // Convertir el mail a minúsculas.
 //       image,
 //       password: encryptedPassword,
-//       roleId: 2 // Dejo este comentario para cuando hagas code review. Está definido el rol 1 para admin y rol 2 para usuario, por eso por defecto se va a registrar con roleid 2
+//       roleId: 2
+// Dejo este comentario para c
 //     });
 
 //     // Enviar email de bienvenida al nuevo usuario registrado.
@@ -100,11 +100,15 @@
 //   userLogin
 // }
 
+const AuthService = require('../services/auth.service');
+
 class AuthController {
+  // return token with user's information
   static async login(req, res, next) {
     try {
       const { body } = req;
-      res.json(body);
+      const token = await AuthService.login(body);
+      res.json({ token });
     } catch (err) {
       next(err);
     }
