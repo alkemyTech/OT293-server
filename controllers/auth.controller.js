@@ -113,6 +113,17 @@ class AuthController {
       next(err);
     }
   }
+
+  // return token with new user's information
+  static async register(req, res, next) {
+    try {
+      const { body } = req;
+      const token = await AuthService.registerUser(body);
+      res.json({ token });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = AuthController;

@@ -9,7 +9,7 @@ const { dataValidator } = require('../middlewares/validator');
 const router = express.Router();
 
 // router.get('/me', UserController.getProfile);
-// router.post('/register', Authentication.userRegister);
+router.post('/register', AuthController.register);
 router.post('/login', checkSchema(loginSchema), dataValidator, AuthController.login);
 
 module.exports = router;
