@@ -52,7 +52,20 @@ class TestimonialsController {
     }
   }
 
-  static async delete(req, res, next) {}
+  static async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const container = await db.Testimonials.findOne({ where: { id: id } });
+      if (container) {
+        await db.Testimonials.destroy({ where: { id: id } });
+        res.send("Testimonial eliminado correctamente");
+      } else {
+        res.status(404).send("No existe un testimonial con ese ID");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = TestimonialsController;

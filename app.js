@@ -10,7 +10,6 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
-const activitiesRouter = require('./routes/activities');
 const newsRouter = require('./routes/news');
 const membersRouter = require('./routes/members');
 const categoriesRouter = require('./routes/categories');
@@ -54,6 +53,10 @@ app.use('/slides', slidesRouter);
 app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
 app.use('/contacts', contactsRouter);
+
+
+// Router to upload files
+
 app.use('/files', fileUploadRouter);
 app.use('/comments', commentsRouter);
 
