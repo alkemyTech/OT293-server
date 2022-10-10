@@ -74,6 +74,13 @@ class AuthService {
       throw new Error(err);
     }
   }
+
+  static async getUserById(id) {
+    const user = db.User.findByPk(id, {
+      attributes: ['firstName', 'lastName', 'image', 'email'],
+    });
+    return user;
+  }
 }
 
 module.exports = AuthService;
