@@ -27,7 +27,7 @@ class AuthController {
   static async getProfile(req, res, next) {
     try {
       const { user } = req;
-      const userData = await AuthService.getUserById(user.sub);
+      const userData = await AuthService.getUserById(user.id);
       res.json({ userData });
     } catch (err) {
       next(err);
