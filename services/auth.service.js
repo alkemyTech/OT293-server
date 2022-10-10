@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const sgMail = require('@sendgrid/mail');
 
-const config = require('../config/config').development;
 const Jwt = require('../utils/jwt');
 const welcomeEmail = require('../templates/welcomeEmail');
 
@@ -68,7 +67,7 @@ class AuthService {
 
   static async sendEmail(message) {
     try {
-      sgMail.setApiKey(config.sendgridApikey);
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       await sgMail.send(message);
     } catch (err) {
       throw new Error(err);
