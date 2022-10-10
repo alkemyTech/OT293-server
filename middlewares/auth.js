@@ -1,5 +1,7 @@
 const Jwt = require('../utils/jwt');
 
+const db = require('../models/index');
+
 const auth = async (req, res, next) => {
   try {
     const bearerAuth = req.get('authorization'); // Returns: 'Bearer <token>'
@@ -7,8 +9,16 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ message: 'Unauthorization. Please log in' });
     }
     const token = bearerAuth.split(' ').pop();
-    const user = await Jwt.verifyToken(token);
-    req.user = user;
+    const payload = await Jwt.verifyToken(token);
+
+    const user = await db.User.findByPk(payload.sub, {
+      attributes: ['id', 'roleId'],
+    });
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    req.user = user.dataValues;
     next();
   } catch (err) {
     next(err);

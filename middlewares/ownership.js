@@ -1,12 +1,15 @@
 const verifyUser = async (req, res, next) => {
   const { id } = req.params;
-  const { sub } = req.user; // user ID from json web token
+  const userId = req.user.id;
+  const role = req.user.roleId;
 
-  if (sub !== Number(id)) {
+  if (role === 1) {
+    next();
+  } else if (userId === Number(id)) {
+    next();
+  } else {
     return res.status(403).json({ message: 'You are not authorized to access this resource' });
   }
-
-  next();
 };
 
 module.exports = verifyUser;
