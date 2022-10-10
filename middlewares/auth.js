@@ -1,4 +1,5 @@
 'use strict';
+require("dotenv").config();
 
 const jwt = require('jsonwebtoken');
 const db = require('../models');
@@ -26,7 +27,7 @@ const auth = async (req, res, next) => {
 
     const user = await db.User.findByPk(user_id);
 
-    if (!user.status) {
+    if (!user) {
       return res.status(403).json({ message: 'Unauthenticated' });
     }
 

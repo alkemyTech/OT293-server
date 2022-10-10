@@ -10,9 +10,25 @@ const verifyAdmin = require('../middlewares/admin');
 
 const router = express.Router();
 
-router.get('/', auth, verifyAdmin, CategoriesController.findAll);
-router.get('/categories/:id', verifyAdmin, CategoriesController.findOne);
-router.post('/', verifyAdmin, CategoriesController.create);
+router.get('/', 
+    auth, 
+    verifyAdmin, 
+    CategoriesController.findAll
+);
+
+router.get(
+    '/:id', 
+    auth,
+    verifyAdmin, 
+    CategoriesController.findOne
+);
+
+router.post(
+    '/', 
+    auth,
+    verifyAdmin, 
+    CategoriesController.create
+);
 
 router.put('/:id', 
     auth,
@@ -21,6 +37,11 @@ router.put('/:id',
     CategoriesController.update
 );
 
-router.delete('/:id', verifyAdmin, CategoriesController.delete);
+router.delete(
+    '/:id', 
+    auth,
+    verifyAdmin, 
+    CategoriesController.delete
+);
 
 module.exports = router;
