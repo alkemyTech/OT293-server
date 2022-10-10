@@ -4,7 +4,6 @@ class Jwt {
   static async signToken(user) {
     const payload = {
       sub: user.id,
-      role: user.roleId,
     };
     const token = jwt.sign(
       payload,
