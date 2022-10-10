@@ -21,6 +21,8 @@ const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
 const contactsRouter = require('./routes/contacts');
 
+const commentsRouter = require('./routes/comments');
+
 const app = express();
 app.use(cors());
 
@@ -52,14 +54,9 @@ app.use('/slides', slidesRouter);
 app.use('/members', membersRouter);
 app.use('/testimonials', testimonialsRouter);
 app.use('/contacts', contactsRouter);
-
-<<<<<<< HEAD
-=======
-
-// Router to upload files
 app.use('/files', fileUploadRouter);
+app.use('/comments', commentsRouter);
 
->>>>>>> d20fe81fcf86918ba2f2bee7bef05aaf7bf23c48
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
