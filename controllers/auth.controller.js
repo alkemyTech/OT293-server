@@ -103,7 +103,7 @@
 const AuthService = require('../services/auth.service');
 
 class AuthController {
-  // return token with user's information
+  // Returns token with user's information
   static async login(req, res, next) {
     try {
       const { body } = req;
@@ -114,12 +114,25 @@ class AuthController {
     }
   }
 
-  // return token with new user's information
+  // Returns token with new user's information
   static async register(req, res, next) {
     try {
       const { body } = req;
       const token = await AuthService.registerUser(body);
       res.json({ token });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // Returns the information of the authenticated user
+  static async getProfile(req, res, next) {
+    try {
+      const { user } = req;
+      // const loggedUser = await AuthService.getUserById(user.sub);
+      // res.json({ loggedUser });
+      console.log(user);
+      res.json({ ok: true });
     } catch (err) {
       next(err);
     }
