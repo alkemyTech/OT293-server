@@ -9,8 +9,9 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/', verifyAdmin, SlidesController.findAll);
-router.get('/:id', auth, verifyAdmin, SlidesController.findOne);
+router.get("/", verifyAdmin, SlidesController.findAll);
+router.get("/:id", auth, verifyAdmin, SlidesController.findOne);
+
 router.put(
   '/:id',
   verifyAdmin,

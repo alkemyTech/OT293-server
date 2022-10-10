@@ -22,4 +22,4 @@ const uploadfile = async (file) => {
   return await client.send(command);
 };
 
-module.exports = { uploadfile };
+module.exports = client;

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.181.0",
+    "@aws-sdk/s3-request-presigner": "^3.185.0",
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
@@ -28,9 +29,6 @@
     "swagger-ui-express": "^4.5.0"
   },
   "devDependencies": {
-    "eslint": "^8.23.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.19",
     "sequelize-cli": "^6.2.0"
   }
