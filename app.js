@@ -10,7 +10,6 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const organizationsRouter = require('./routes/organizations');
-const activitiesRouter = require('./routes/activities');
 const newsRouter = require('./routes/news');
 const membersRouter = require('./routes/members');
 const categoriesRouter = require('./routes/categories');
@@ -20,6 +19,8 @@ const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
 const contactsRouter = require('./routes/contacts');
+const activitiesRouter = require('./routes/activities');
+const commentsRouter = require('./routes/comments');
 
 const app = express();
 app.use(cors());
@@ -54,7 +55,9 @@ app.use('/testimonials', testimonialsRouter);
 app.use('/contacts', contactsRouter);
 
 // Router to upload files
+
 app.use('/files', fileUploadRouter);
+app.use('/comments', commentsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
