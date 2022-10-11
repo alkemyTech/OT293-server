@@ -44,7 +44,7 @@ class AuthService {
       roleId: 2,
     };
     const user = await db.User.create(newUserData);
-    await this.sendWelcomeEmail(data.email);
+    this.sendWelcomeEmail(data.email);
     const token = await Jwt.signToken(user);
     return token;
   }
