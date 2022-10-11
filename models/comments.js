@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   Comments.init({
     id: {
       allowNull: false,
-      primaryKey: true,
+      primaryKey: true
+      autoIncrement: true,
       type: DataTypes.INTEGER
     },
     body: {
