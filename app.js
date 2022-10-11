@@ -19,7 +19,7 @@ const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
 const contactsRouter = require('./routes/contacts');
-
+const activitiesRouter = require('./routes/activities');
 const commentsRouter = require('./routes/comments');
 
 const app = express();
