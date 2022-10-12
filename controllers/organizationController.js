@@ -12,7 +12,20 @@ class OrganizationController {
     }
   }
 
-  static async findOne(req, res, next) {}
+  static async findOne(req, res, next) {
+    try {
+      const { id } = req.params;
+      const organization = await db.Organization.findByPk(id, {
+        where: { id },
+        include: 'slides'
+      })
+      if(!organization){
+        res.status(404).json({msg: 'No existe Organizacion'})
+      }
+    } catch (error) {
+      
+    }
+  }
 
   static async create(req, res, next) {}
 
