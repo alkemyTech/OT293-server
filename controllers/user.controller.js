@@ -38,7 +38,7 @@ class UserController {
 
   // Partially update User data
   // Method: PATCH
-  static async partialUpdateUser(req, res) { 
+  static async partialUpdateUser(req, res, next) { 
     try {
 
       const errors = validationResult(req);
@@ -87,31 +87,6 @@ class UserController {
       res.json({ data: { id: deletedUser } });
     } catch (error) {
       next(error);
-    }
-  }
-
-  static async getProfile(req, res) {
-    const { authorization } = req.headers;
-    if (!authorization) return res.status(401).json({ msg: 'Unauthorized' });
-
-    try {
-      const token = authorization.split(' ').pop();
-      if (!token) {
-        return res.status(401).json({ error: 'token missing or invalid' });
-      }
-      const decodedToken = await Jwt.verifyToken(token);
-      if (decodedToken === null) {
-        return res
-          .status(400)
-          .json({ msg: 'Token missing or invalid.' });
-      }
-      const { user_id } = decodedToken;
-      const userProfile = await db.User.findByPk(user_id);
-      return res.status(200).json(userProfile);
-    } catch (e) {
-      return res.status(400).json({
-        msg: `${e.message}`,
-      });
     }
   }
 }
