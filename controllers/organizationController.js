@@ -22,8 +22,9 @@ class OrganizationController {
       if(!organization){
         res.status(404).json({msg: 'No existe Organizacion'})
       }
+
     } catch (error) {
-      
+      next(error)
     }
   }
 
