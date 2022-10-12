@@ -23,4 +23,9 @@ router.delete('/:id',
   TestimonialsController.delete
 );
 
+router.get('/', 
+  auth,
+  TestimonialsController.findAll
+);
+
 module.exports = router;
