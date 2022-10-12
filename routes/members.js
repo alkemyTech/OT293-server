@@ -1,15 +1,32 @@
 const express = require('express');
-const router = express.Router();
-const MemberController = require('../controllers/members.controller');
+const { checkSchema } = require("express-validator"); 
+
+const auth = require("../middlewares/auth");
 const verifyAdmin = require('../middlewares/admin');
-const { checkSchema } = require("express-validator");
-const MemberController = require("../controllers/members.controller");
 const { deleteMemberSchema } = require("../schemas/member.schema");
 const { dataValidator } = require("../middlewares/validator");
-const verifyAdmin = require("../middlewares/admin");
+const MemberController = require("../controllers/members.controller");
 
-router.get('/', verifyAdmin, MemberController.getMembers);
-router.post('/', verifyAdmin, MemberController.createMember);
-router.delete("/:id", verifyAdmin, checkSchema(deleteMemberSchema), dataValidator, MemberController.deleteMember);
+const router = express.Router();
+
+router.get('/', 
+  auth,
+  verifyAdmin,
+  MemberController.getMembers
+);
+router.post('/', 
+  auth,
+  verifyAdmin, 
+  MemberController.createMember
+);
+router.delete(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(deleteMemberSchema),
+  dataValidator,
+  MemberController.deleteMember
+);
+
 
 module.exports = router;
