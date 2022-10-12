@@ -10,6 +10,7 @@ const verifyAdmin = require("../middlewares/admin");
 
 router.get('/', verifyAdmin, MemberController.getMembers);
 router.post('/', verifyAdmin, MemberController.createMember);
+router.put('/:id', verifyAdmin, MemberController.updateMember);
 router.delete("/:id", verifyAdmin, checkSchema(deleteMemberSchema), dataValidator, MemberController.deleteMember);
 
 module.exports = router;
