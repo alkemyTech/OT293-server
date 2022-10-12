@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Organizations.hasMany(models.Slides, {
+        as: 'slides',
+        foreignKey: 'organizationId'
+      })
     }
   }
   Organization.init(
@@ -52,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Organization',
       timestamps: true,
       paranoid: true,
+      freezeTableName: true
     },
   );
   return Organization;
