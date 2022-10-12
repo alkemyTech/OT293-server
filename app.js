@@ -19,6 +19,7 @@ const backOfficeRouter = require('./routes/backOffice');
 const slidesRouter = require('./routes/slides');
 const testimonialsRouter = require('./routes/testimonials');
 const contactsRouter = require('./routes/contacts');
+const activitiesRouter = require('./routes/activities');
 
 const app = express();
 app.use(cors());
