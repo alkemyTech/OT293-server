@@ -55,6 +55,10 @@ class MemberController {
         res.status(404).json({msg: 'Miembro no existe'})
       }
 
+      const update = await member.update(data);
+
+      res.status(200).json({msg: 'Miembro Actualizado con exito', data: update});
+
     } catch (error) {
       next(error)
     }
