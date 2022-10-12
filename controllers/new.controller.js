@@ -11,7 +11,21 @@ class NewController {
    */
 
   static async findAll(req, res) {
-    const { count, data } = await db.New.findAndCountAll();
+    const { page = 0 } = req.query;
+
+    //Valor por defecto
+    const slidesForPage = 10;
+
+
+    const options = {
+      limit: slidesForPage,
+      offset: page * slidesForPage
+    };
+
+
+    const { count, data } = await db.New.findAndCountAll(options);
+
+
 
     res.status(200).json({
       count,
