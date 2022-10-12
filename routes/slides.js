@@ -9,17 +9,34 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get("/", verifyAdmin, SlidesController.findAll);
-router.get("/:id", auth, verifyAdmin, SlidesController.findOne);
+router.get(
+  '/', 
+  auth,
+  verifyAdmin, 
+  SlidesController.findAll
+);
+
+router.get(
+  '/:id', 
+  auth, 
+  verifyAdmin, 
+  SlidesController.findOne
+);
 
 router.put(
   '/:id',
+  auth,
   verifyAdmin,
   checkSchema(updateSlideSchema),
   dataValidator,
   SlidesController.update,
 );
 
-router.delete('/:id', verifyAdmin, SlidesController.delete);
+router.delete(
+  '/:id', 
+  auth,
+  verifyAdmin, 
+  SlidesController.delete
+);
 
 module.exports = router;
