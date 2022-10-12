@@ -1,42 +1,28 @@
-'use strict';
+const Jwt = require('../utils/jwt');
 
-const jwt = require('jsonwebtoken');
-const db = require('../models');
-
-/**
- * Verifies if the user is authenticated
- * 
- * @param {Express.Request} req 
- * @param {Express.Response} res 
- * @param {callback} next 
- */
+const db = require('../models/index');
 
 const auth = async (req, res, next) => {
-
-  const token = req.get('Authorization');
-
-  if (!token) {
-    res.status(403).json({ message: 'Unauthenticated' });
-    return;
-  }
-
   try {
+    const bearerHeader = req.get('authorization'); // Returns: 'Bearer <token>'
+    if (!bearerHeader) {
+      return res.status(401).json({ message: 'Unauthorization. Please log in' });
+    }
+    const token = bearerHeader.split(' ').pop();
+    const payload = await Jwt.verifyToken(token);
 
-    const { user_id } = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await db.User.findByPk(user_id);
-
-    if (!user.status) {
-      return res.status(403).json({ message: 'Unauthenticated' });
+    const user = await db.User.findByPk(payload.sub, {
+      attributes: ['id', 'roleId'],
+    });
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
     }
 
-    req.user = user;
-
+    req.user = user.dataValues;
     next();
-
-  } catch (error) {
-    res.status(403).json({ message: 'Unauthenticated' });
+  } catch (err) {
+    next(err);
   }
-}
+};
 
 module.exports = auth;
