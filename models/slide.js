@@ -44,7 +44,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Slide',
-    paranoid: true
+    paranoid: true,
+    freezeTableName: true
   });
   return Slide;
 };
