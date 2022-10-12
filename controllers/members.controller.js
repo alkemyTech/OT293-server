@@ -45,7 +45,21 @@ class MemberController {
 
   // Update all member data
   // Method: PUT
-  static async updateMember(req, res) {}
+  static async updateMember(req, res, next) {
+    const { id } = req.params;
+    const data = req.body;
+
+    try {
+      const member = await db.Member.findByPk(id);
+      if (!member) {
+        res.status(404).json({msg: 'Miembro no existe'})
+      }
+
+    } catch (error) {
+      next(error)
+    }
+
+  }
 
   // Partially update member data
   // Method: PATCH
