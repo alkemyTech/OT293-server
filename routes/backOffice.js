@@ -1,9 +1,14 @@
 const express = require('express');
 
 const router = express.Router();
+const auth = require('../middlewares/auth');
 const verifyAdmin = require('../middlewares/admin');
 const BackOfficeController = require('../controllers/backOffice.controller');
 
-router.get('/contacts', verifyAdmin, BackOfficeController.findAllContacts);
+router.get('/contacts', 
+    auth,
+    verifyAdmin, 
+    BackOfficeController.findAllContacts
+);
 
 module.exports = router;
