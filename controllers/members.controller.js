@@ -2,14 +2,38 @@
 const db = require("../models/index");
 
 class MemberController {
-  constructor() {}
-
   // Get all members
   // Method: GET
   static async getMembers(req, res, next) {
     try {
-      const members = await db.db.Member.findAll();
-      res.status(200).json({data: members})
+      const { page = 0 } = req.query;
+      const membersPerPage= 10;
+
+      const options = {
+        limit: membersPerPage,
+        offset: (page + 1) * membersPerPage,
+      }
+
+      let previousPageUrl;
+      let nextPageUrl;
+
+      const {count, rows} = await db.Member.findAndCountAll(options);
+
+      if(page > Math.ceil(count / membersPerPage)) {
+        res.status(404).json({error: "Invalid page"});
+      }
+
+      const url = `${req.protocol}://${req.get('host')}${req.originalUrl}?page=`;
+   
+      page === 0 
+      ? previousPageUrl = null
+      : previousPageUrl = `${url}${page - 1}`;
+
+      page === Math.ceil(count / membersPerPage)
+      ? nextPageUrl = null
+      : nextPageUrl += `${url}${page + 1}`;
+
+      res.status(200).json({data: count, rows, previousPageUrl, nextPageUrl});
     } catch (err) {
       next(err)
     }
