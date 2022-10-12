@@ -10,7 +10,14 @@ class NewController {
    * @param {Express.Response} res 
    */
 
-  static async findAll(req, res) {}
+  static async findAll(req, res) {
+    const { count, data } = await db.New.findAndCountAll();
+
+    res.status(200).json({
+      count,
+      data
+    })
+  }
 
   /**
    * Find one resource
