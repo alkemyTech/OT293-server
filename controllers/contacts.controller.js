@@ -16,7 +16,7 @@ class ContactsController {
 
   static async findOne(req, res, next) {
     try {
-       
+
     } catch (e) {
       next(e);
     }
@@ -24,9 +24,10 @@ class ContactsController {
 
   static async create(req, res, next) {
     try {
-     
+      const createdContact = await db.Contacts.create(req.body);
+      res.status(201).json({ data: createdContact });
     } catch (e) {
-      next(e);
+      next(e)
     }
   }
 
@@ -41,7 +42,7 @@ class ContactsController {
 
   static async delete(req, res, next) {
     try {
-    
+
     } catch (e) {
       next(e);
     }
