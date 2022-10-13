@@ -43,7 +43,18 @@ class CommentsController {
   }
 
   static async delete(req, res, next) {
-
+    try {
+      const { id } = req.params;
+      const deleteComment = await db.Comments.findOne({ where: { id } });
+      if (!deleteComment) {
+        res.status(404).send('Comment not found');
+      } else {
+        await db.Comments.destroy({ where: { id } });
+        res.send('Comment has been deleted correctly');
+      }
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
