@@ -9,7 +9,19 @@ const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
-// router.get("/:id", verifyAdmin, NewController.findOne);
+router.get(
+  "/:id", 
+  auth,
+  verifyAdmin, 
+  NewController.findOne
+);
+
+router.get(
+  "/:id/comments",
+  auth,
+  NewController.findComments
+);
+
 router.put(
   "/:id", 
   auth, 
