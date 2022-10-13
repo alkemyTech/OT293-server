@@ -1,6 +1,8 @@
 'use strict';
 
 const db = require('../models');
+const {sendMail} = require('../helpers/sendMail');
+const welcomeEmail = require('../templates/welcomeEmail');
 
 class ContactController {
 
@@ -43,6 +45,7 @@ class ContactController {
   static async store(req, res, next) {
     try {
       const createdContact = await db.Contacts.create(req.body);
+      await sendMail(req.body.email, "thanks for contacting us!", welcomeEmail('ONG SOMOS MAS', 'Thanks for contacting us', {mail:'ong@somos-mas.com', instagram:'somos_mas', facebook:'somos_mas', phone: 5445445}));
       res.status(201).json({data: createdContact});
     } catch (e) {
       next(e)
