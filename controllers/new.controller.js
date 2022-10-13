@@ -71,6 +71,32 @@ class NewController {
     }
   }
 
+   /**
+   * Find all comment of a new
+   * 
+   * @param {Express.Request} req 
+   * @param {Express.Response} res
+   * @param {callback} next
+   */
+
+  static async findComments(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const post = await db.New.findByPk(id, {
+        include: ['comments']
+      });
+
+      if(!post) {
+        return res.status(404).json({message: 'New not found'});
+      }
+
+      res.json({data:  post.comments});
+    } catch (e) {
+      next(e)
+    }
+  }
+
   /**
    * Store a resource in database
    * 
