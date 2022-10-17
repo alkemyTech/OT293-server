@@ -11,6 +11,10 @@ const auth = async (req, res, next) => {
     const token = bearerHeader.split(' ').pop();
     const payload = await Jwt.verifyToken(token);
 
+    if(!payload) {
+      return res.status(401).json({ message: 'Unauthorization. Please log in' });
+    }
+
     const user = await db.User.findByPk(payload.sub, {
       attributes: ['id', 'roleId'],
     });

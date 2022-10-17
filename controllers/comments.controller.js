@@ -18,6 +18,22 @@ class CommentsController {
   }
 
   static async create(req, res, next) {
+    const { userId, body, newsId } = req.body;
+    try {
+      await db.Comments.create({
+        userId,
+        body,
+        newsId
+
+      })
+
+    } catch (error) {
+      return res.status(200).json({
+        msg: error.message });
+    };
+    return res.status(httpStatus.OK).json({
+      msg: 'Creation has been successful'
+    });
   }
 
   static async update(req, res, next) {

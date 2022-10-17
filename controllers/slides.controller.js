@@ -1,4 +1,6 @@
 const db = require('../models/index');
+const {decodeImage} = require('../services/image');
+const uploadImage = require('../helpers/uploadImage');
 
 class SlidesController {
   static async findAll(req, res, next) {
@@ -31,7 +33,34 @@ class SlidesController {
   }
 
   static async create(req, res, next) {
-
+    try {
+      const { imageUrl, text, organizationId } = req.body;
+      let { order } = req.body;
+      let imageInfo = decodeImage(imageUrl);
+  
+      let imageUri = await uploadImage(
+        imageInfo.datos
+      );
+      if (!order) {
+        order = await db.Slide.count({
+          where: {
+            organizationId
+          },
+        });
+        order++;
+      }
+      const newSlide = await db.Slide.create({
+        imageUri,
+        text,
+        order,
+        organizationId,
+      });
+      newSlide.save();
+      return res.status(201).json(newSlide);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
   }
 
   static async update(req, res, next) {
