@@ -6,7 +6,6 @@ const { updateOrganizationSchema } = require("../schemas/organization.schema");
 const { dataValidator } = require("../middlewares/validator");
 const auth = require("../middlewares/auth");
 const verifyAdmin = require("../middlewares/admin");
-const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
