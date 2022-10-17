@@ -39,4 +39,11 @@ router.delete(
   SlidesController.delete
 );
 
+router.post(
+  '/', 
+  auth,
+  verifyAdmin, 
+  SlidesController.create
+);
+
 module.exports = router;
