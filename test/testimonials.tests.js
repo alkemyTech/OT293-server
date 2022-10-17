@@ -61,7 +61,7 @@ describe("Testimonials", () => {
         .auth(token, { type: "bearer" })
         .send({})
         .end((err, response) => {
-          response.should.have.status(400);
+          response.should.have.status(404);
           response.body.should.have.property("message");
           response.body.should.to.deep.equal({message:"Name and content are required"})
           done();
@@ -83,24 +83,51 @@ describe("Testimonials", () => {
     });
   });
 
+  describe("Find all testimonials [Get /testimonials/]", () => {
+    it("It should get all testimonials with max 10 items", (done) => {
+      chai
+        .request(server)
+        .get("/testimonials")
+        .auth(token, { type: "bearer" })
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.have.property("nextPage");
+          response.body.should.have.property("previousPage");
+          response.body.should.have.property("items");
+          response.body.items.should.have.lengthOf.below(11)
+          done();
+        });
+    });
+
+    it("It should not get all testimonials without auth", (done) => {
+      chai
+        .request(server)
+        .get("/testimonials")
+        .send({})
+        .end((err, response) => {
+          response.should.have.status(401);
+          response.body.should.have.property("message");
+          response.body.should.to.deep.equal({message:"Unauthorization. Please log in"})
+          done();
+        });
+    });
+});
 
   describe("Edit testimonial [PUT testimonials/:id]", () => {
     const data = {
         name: "John Doe",
-        image: "https://myimage.com/photo.jpg",
         content: "Contenido del testimonio"
       };
 
     it("It should edit testimonial", (done) => {
       chai
         .request(server)
-        .put("/testimonials/12")
+        .put("/testimonials/1")
         .send(data)
         .auth(token, { type: "bearer" })
         .end((err, response) => {
           response.should.have.status(200);
           response.body.name.should.to.deep.equal(data.name);
-          response.body.image.should.to.deep.equal(data.image)
           response.body.content.should.to.deep.equal(data.content)
           done();
         });
@@ -109,7 +136,7 @@ describe("Testimonials", () => {
     it("It should not edit a testimonial without auth", (done) => {
       chai
         .request(server)
-        .put("/testimonials/12")
+        .put("/testimonials/1")
         .send({})
         .end((err, response) => {
           response.should.have.status(401);
@@ -123,7 +150,7 @@ describe("Testimonials", () => {
     it("It should not edit a testimonial if testimonial is not found", (done) => {
       chai
         .request(server)
-        .put("/testimonials/100")
+        .put("/testimonials/123412341234123")
         .send({})
         .auth(token, { type: "bearer" })
         .end((err, response) => {
@@ -136,12 +163,11 @@ describe("Testimonials", () => {
   });
 
 
-
   describe("Delete a testimonial [Delete testimonials/:id]", () => {
     it("It should delete a testimonial", (done) => {
       chai
         .request(server)
-        .delete("/testimonials/7")
+        .delete("/testimonials/1")
         .auth(token, { type: "bearer" })
         .end((err, response) => {
           response.should.have.status(200);
@@ -153,7 +179,7 @@ describe("Testimonials", () => {
     it("It should not delete a testimonial without auth", (done) => {
       chai
         .request(server)
-        .delete("/testimonials/12")
+        .delete("/testimonials/1")
         .send({})
         .end((err, response) => {
           response.should.have.status(401);
@@ -162,25 +188,11 @@ describe("Testimonials", () => {
           done();
         });
     });
-
-    it("It should not create a testimonial without auth", (done) => {
-      chai
-        .request(server)
-        .post("/testimonials")
-        .send({})
-        .end((err, response) => {
-          response.should.have.status(401);
-          response.body.should.have.property("message");
-          response.body.should.to.deep.equal({message:"Unauthorization. Please log in"})
-          done();
-        });
-    });
-
 
     it("It should not delete a testimonial if id doesn´t exist", (done) => {
       chai
         .request(server)
-        .delete("/testimonials/2323")
+        .delete("/testimonials/2323123123123213213")
         .auth(token, { type: "bearer" })
         .end((err, response) => {
           response.should.have.status(404);
@@ -188,38 +200,5 @@ describe("Testimonials", () => {
           done();
         });
     });
-
-    describe("Find all testimonials [Get /testimonials/]", () => {
-        it("It should get all testimonials with max 10 items", (done) => {
-          chai
-            .request(server)
-            .get("/testimonials")
-            .auth(token, { type: "bearer" })
-            .end((err, response) => {
-              response.should.have.status(200);
-              response.body.should.have.property("nextPage");
-              response.body.should.have.property("previousPage");
-              response.body.should.have.property("items");
-              response.body.items.should.have.lengthOf.below(11)
-              done();
-            });
-        });
-
-        it("It should not get all testimonials without auth", (done) => {
-          chai
-            .request(server)
-            .get("/testimonials")
-            .send({})
-            .end((err, response) => {
-              response.should.have.status(401);
-              response.body.should.have.property("message");
-              response.body.should.to.deep.equal({message:"Unauthorization. Please log in"})
-              done();
-            });
-        });
-    
-    
-    
-  });
-})
+  })
 })
