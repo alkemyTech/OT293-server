@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
 
     static associate(models) {
-      User.belongsTo(models.Role, {as: 'role'});
+      this.belongsTo(models.Role, {as: 'role'});
     }
   };
   User.init({

@@ -8,14 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Comments.belongsTo(models.User, { as: 'user' });
-      Comments.belongsTo(models.New, { as: 'news' });
+      this.belongsTo(models.User, { as: 'user' });
+      this.belongsTo(models.New, { as: 'news' });
     }
   }
   Comments.init({
     id: {
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
       autoIncrement: true,
       type: DataTypes.INTEGER
     },
