@@ -50,7 +50,7 @@ class MemberController {
     try {
       const { name, facebookUrl, instagramUrl, linkedinUrl, image, description } = req.body;
       if (!(name && image)) { 
-        res.status(404).send('Campos obligatorios') 
+        res.status(400).json({message: 'Campos obligatorios'}) 
       } else {
         const createMember = await db.Member.create({ 
           name,
@@ -60,7 +60,7 @@ class MemberController {
           image, 
           description 
          })
-        res.send("Miembro creado correctamente")
+        res.json({message: "Miembro creado correctamente"})
       }
     } catch (error) {
       console.log(error) 
