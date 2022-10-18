@@ -7,5 +7,6 @@ const verifyAdmin = require("../middlewares/admin");
 
 router.get('/', CommentsController.findAll);
 router.put('/:id', auth, verifyAdmin, CommentsController.update);
+router.post('/', CommentsController.create);
 
 module.exports = router;
