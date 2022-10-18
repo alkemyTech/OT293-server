@@ -18,6 +18,22 @@ class CommentsController {
   }
 
   static async create(req, res, next) {
+    const { userId, body, newsId } = req.body;
+    try {
+      await db.Comments.create({
+        userId,
+        body,
+        newsId
+
+      })
+
+    } catch (error) {
+      return res.status(200).json({
+        msg: error.message });
+    };
+    return res.status(httpStatus.OK).json({
+      msg: 'Creation has been successful'
+    });
   }
 
   static async update(req, res, next) {
@@ -43,7 +59,18 @@ class CommentsController {
   }
 
   static async delete(req, res, next) {
-
+    try {
+      const { id } = req.params;
+      const deleteComment = await db.Comments.findOne({ where: { id } });
+      if (!deleteComment) {
+        res.status(404).send('Comment not found');
+      } else {
+        await db.Comments.destroy({ where: { id } });
+        res.send('Comment has been deleted correctly');
+      }
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
