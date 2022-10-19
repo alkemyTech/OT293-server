@@ -1,4 +1,5 @@
 const express = require('express');
+
 const auth = require("../middlewares/auth");
 const verifyAdmin = require('../middlewares/admin');
 const { checkSchema } = require("express-validator");
@@ -267,15 +268,15 @@ router.post('/',
  *        
  */
  
- 
 router.delete(
-  "/:id",
+  '/:id',
   auth,
   verifyAdmin,
   checkSchema(deleteMemberSchema),
   dataValidator,
   MemberController.deleteMember
 );
+
  
  
 /**
@@ -343,3 +344,4 @@ router.put('/:id', verifyAdmin, MemberController.updateMember);
  
  
 module.exports = router;
+
