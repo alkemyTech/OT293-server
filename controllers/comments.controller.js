@@ -50,7 +50,7 @@ class CommentsController {
         res.status(404).send('Comment not found');
       } else {
         await db.Comments.destroy({ where: { id } });
-        res.send('Comment has been deleted correctly');j
+        res.send('Comment has been deleted correctly');
       }
     } catch (error) {
       next(error);
