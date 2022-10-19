@@ -7,8 +7,6 @@ const verifyAdmin = require('../middlewares/admin');
 const { updateUserSchema } = require('../schemas/user.schema');
 const auth = require('../middlewares/auth');
 const UserController = require('../controllers/user.controller');
-const auth = require('../middlewares/auth');
-
 const router = express.Router();
 
 /* GET users listing. */
