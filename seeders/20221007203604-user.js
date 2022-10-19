@@ -58,7 +58,7 @@ const admins = [
   {
     firstName: 'admin',
     lastName: '6',
-    email: 'admin1@mail.com',
+    email: 'admin6@mail.com',
     password: encrypt('admin 6'),
     image: 'image 6',
     roleId: 1,
@@ -162,7 +162,7 @@ const standardUsers = [
   {
     firstName: 'standard',
     lastName: '6',
-    email: 'standard1@mail.com',
+    email: 'standard6@mail.com',
     password: encrypt('standard 6'),
     image: 'image 6',
     roleId: 2,
