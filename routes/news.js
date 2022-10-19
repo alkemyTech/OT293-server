@@ -52,8 +52,8 @@ const router = express.Router();
  *         name: id
  *         schema:
  *            type: string
- *           required: true
- *           description: the news id
+ *            required: true
+ *            description: the news id
  *     responses:
  *       200:
  *         description: one news
@@ -141,8 +141,8 @@ router.post("/", auth, verifyAdmin, checkSchema(createNewSchema), dataValidator,
  *         name: id
  *         schema:
  *            type: string
- *           required: true
- *           description: the news id
+ *            required: true
+ *            description: the news id
  *     responses:
  *       200:
  *         description: news has been deleted
