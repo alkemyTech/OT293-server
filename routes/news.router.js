@@ -189,7 +189,7 @@ router.get("/", auth, verifyAdmin, NewController.findAll);
  *         schema:
  *            type: string
  *            required: true
- *            description: the news id
+ *            description: the new's id
  *     responses:
  *       200:
  *         description: one news
@@ -198,8 +198,36 @@ router.get("/", auth, verifyAdmin, NewController.findAll);
  *              schema:
  *                type: object
  *                $ref: '#/components/schemas/Get new'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       404:
  *         description: news not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
  *       500:
  *         description: Internal server error
  */
