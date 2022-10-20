@@ -1,3 +1,4 @@
+const { pagination } = require("../helpers/pagination");
 const db = require("../models/index");
 
 class NewController {
@@ -5,60 +6,26 @@ class NewController {
 
   /**
    * List of resources
-   * 
-   * @param {Express.Request} req 
-   * @param {Express.Response} res 
+   *
+   * @param {Express.Request} req
+   * @param {Express.Response} res
+   * @param {callback} next
    */
 
-  static async findAll(req, res) {
-    const { page = 0 } = req.query;
-
-    //Valor por defecto
-    const slidesForPage = 10;
-
-    const options = {
-      limit: slidesForPage,
-      offset: page * slidesForPage
-    };
-
-    //Consulta a la db
-    const { count, data } = await db.New.findAndCountAll(options);
-
-    let previousPageUrl;
-    let nextPageUrl;
-
-    if (page > Math.ceil(count / slidesForPage)) {
-      res.status(422).json({ error: 'Invalid page' });
+  static async findAll(req, res, next) {
+    try {
+      const page = await pagination(req, "New");
+      res.json(page);
+    } catch (error) {
+      next(error);
     }
-
-    const urlBase = `${req.protocol}://${req.get('host')}${req.originalUrl}?page=`;
-
-    if (page === 0) {
-      previousPageUrl = null;
-    } else {
-      previousPageUrl = `${urlBaseurlBase}${page - 1}`;
-    }
-
-    if (page === Math.ceil(count / slidesForPage)) {
-      nextPageUrl = null;
-    } else {
-      nextPageUrl += `${urlBase}${page + 1}`;
-    }
-
-
-    res.status(200).json({
-      count,
-      data: rows,
-      previousPageUrl,
-      nextPageUrl
-    })
   }
 
   /**
    * Find one resource
-   * 
-   * @param {Express.Request} req 
-   * @param {Express.Response} res 
+   *
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    */
 
   static async findOne(req, res) {
@@ -71,10 +38,10 @@ class NewController {
     }
   }
 
-   /**
+  /**
    * Find all comment of a new
-   * 
-   * @param {Express.Request} req 
+   *
+   * @param {Express.Request} req
    * @param {Express.Response} res
    * @param {callback} next
    */
@@ -84,27 +51,27 @@ class NewController {
       const { id } = req.params;
 
       const post = await db.New.findByPk(id, {
-        include: ['comments']
+        include: ["comments"],
       });
 
-      if(!post) {
-        return res.status(404).json({message: 'New not found'});
+      if (!post) {
+        return res.status(404).json({ message: "New not found" });
       }
 
-      res.json({data:  post.comments});
+      res.json({ data: post.comments });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
   /**
    * Store a resource in database
-   * 
-   * @param {Express.Request} req 
-   * @param {Express.Response} res 
+   *
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    */
 
-  static async store(req, res, next) {
+  static async create(req, res, next) {
     try {
       const { body } = req;
       const newNews = await db.New.create(body);
@@ -116,9 +83,9 @@ class NewController {
 
   /**
    * Update a resourse from the database
-   * 
-   * @param {Express.Request} req 
-   * @param {Express.Response} res 
+   *
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    */
 
   static async update(req, res, next) {
@@ -133,29 +100,28 @@ class NewController {
         .status(200)
         .json({ msg: "Novedad Actualizada con exito", data: updateNew });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
   /**
    * Delete a resource from the database
-   * 
-   * @param {Express.Request} req 
-   * @param {Express.Response} res 
+   *
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    */
-
 
   static async delete(req, res) {
     try {
-      const {id} = req.params;
-  
+      const { id } = req.params;
+
       const deletedNew = await db.New.destroy({
-        where: { id }
+        where: { id },
       });
-  
-      res.json({ data: { id: deletedNew } });   
+
+      res.json({ data: { id: deletedNew } });
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
   }
 }
