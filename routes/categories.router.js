@@ -35,10 +35,13 @@ const router = express.Router();
  *         description:
  *           type: string
  *           description: description of Category
+ *         createdAt:
+ *           type: string
+ *           format: date-time
  *         updatedAt:
  *           type: string
  *           format: date-time
- *         createdAt:
+ *         deletedAt:
  *           type: string
  *           format: date-time
  *       example:
@@ -46,9 +49,9 @@ const router = express.Router();
  *         name: Category 1
  *         image: https://myimage.com/photo.jpg
  *         description: Category
- *         updatedAt: 2017-07-21T17:32:28Z
  *         createdAt: 2017-07-21T17:32:28Z
- *
+ *         updatedAt: 2017-07-21T17:32:28Z
+ *         deletedAt: null
  *     Create category:
  *       type: object
  *       properties:
