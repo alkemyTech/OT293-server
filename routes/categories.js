@@ -23,6 +23,32 @@ const router = express.Router();
  *       scheme: bearer
  *       bearerFormat: JWT
  *   schemas:
+ *     Get category:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: category's name
+ *         image:
+ *           type: string
+ *           description: Category's photo (url)
+ *         description:
+ *           type: string
+ *           description: description of Category
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *       example:
+ *         id: 1
+ *         name: Category 1
+ *         image: https://myimage.com/photo.jpg
+ *         description: Category
+ *         updatedAt: 2017-07-21T17:32:28Z
+ *         createdAt: 2017-07-21T17:32:28Z
+ *
  *     Create category:
  *       type: object
  *       properties:
@@ -40,7 +66,6 @@ const router = express.Router();
  *         - description
  *         - image
  *       example:
- *         id: 1
  *         name: Category 1
  *         image: https://myimage.com/photo.jpg
  *         description: Category
@@ -57,7 +82,6 @@ const router = express.Router();
  *           type: string
  *           description: description of Category
  *       example:
- *         id: 1
  *         name: Category 1.1
  *         image: https://myimage.com/photo.jpg
  *         description: Category 1.1
@@ -85,6 +109,15 @@ const router = express.Router();
  *           application/json:
  *              schema:
  *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items:
+ *                      oneOf:
+ *                        - $ref: '#/components/schemas/Get category'
+ *                  pages:
+ *                    type: integer
+ *                    example: 6
  *       403:
  *         description: Forbidden
  *         content:
@@ -132,7 +165,10 @@ router.get("/", auth, verifyAdmin, CategoriesController.findAll);
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
  *       401:
  *         description: Unauthorized
  *         content:
@@ -190,7 +226,10 @@ router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
  *       400:
  *         description: Bad Request
  *         content:
@@ -262,7 +301,10 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
  *       401:
  *         description: Unauthorized
  *         content:
@@ -337,9 +379,9 @@ router.put(
  *              schema:
  *                type: object
  *                properties:
- *                  message:
- *                    type: string
- *                    example: Category has been deleted correctly
+ *                  data:
+ *                    type: integer
+ *                    example: 1
  *       401:
  *         description: Unauthorized
  *         content:

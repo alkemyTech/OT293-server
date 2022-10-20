@@ -58,7 +58,7 @@ class CategoriesController {
       if (!category) {
         return res.status(404).json({ message: "Category not found" });
       }
-      return res.status(200).json(category);
+      return res.status(200).json({ data: category });
     } catch (error) {
       next(error);
     }
@@ -76,16 +76,16 @@ class CategoriesController {
 
       // Si no existe el nombre, crear categoría
       if (!container) {
-        await db.Categories.create({
+        const category = await db.Categories.create({
           name: name.toLowerCase(),
           description,
           image,
         });
-        res.status(201).json({ message: "Categoría creada correctamente!" });
+        res.status(201).json({ data: category });
       } else {
         // Si existe el nombre
         res.status(400).json({
-          message: "Ya existe una categoría con ese nombre, intente con otra.",
+          message: "This name is taken, try with another one",
         });
       }
     } catch (err) {
@@ -129,7 +129,7 @@ class CategoriesController {
       }
       res.json({
         data: {
-          message: "Category has been deleted correctly",
+          id: idDeleted.id,
         },
       });
     } catch (e) {
