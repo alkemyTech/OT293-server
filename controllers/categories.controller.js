@@ -1,50 +1,12 @@
 const { validationResult } = require("express-validator");
+const { pagination } = require("../helpers/pagination");
 const db = require("../models/index");
 
 class CategoriesController {
   static async findAll(req, res, next) {
     try {
-      const { page = 0 } = req.query;
-      const CATEGORIES_IN_A_PAGE = 10;
-
-      const options = {
-        limit: CATEGORIES_IN_A_PAGE,
-        offset: (page + 1) * CATEGORIES_IN_A_PAGE,
-        attributes: ["name"],
-      };
-
-      const { count, rows } = await db.Categories.findAndCountAll(options);
-      let previousPageUrl;
-      let nextPageUrl;
-
-      if (page > Math.ceil(count / CATEGORIES_IN_A_PAGE)) {
-        res.status(422).json({ error: "Invalid page" });
-      }
-
-      const URL_BASE = `${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }?page=`;
-
-      if (page === 0) {
-        previousPageUrl = null;
-      } else {
-        previousPageUrl = `${URL_BASE}${page - 1}`;
-      }
-
-      if (page === Math.ceil(count / CATEGORIES_IN_A_PAGE)) {
-        nextPageUrl = null;
-      } else {
-        nextPageUrl += `${URL_BASE}${page + 1}`;
-      }
-
-      res.json({
-        data: {
-          count,
-          categories: rows,
-          previousPageUrl,
-          nextPageUrl,
-        },
-      });
+      const page = await pagination(req, "Categories");
+      res.json(page);
     } catch (error) {
       next(error);
     }

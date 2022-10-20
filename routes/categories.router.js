@@ -5,6 +5,7 @@ const { checkSchema } = require("express-validator");
 const {
   updateCategorySchema,
   createCategorySchema,
+  getCategoriesByPage,
 } = require("../schemas/category.schema");
 
 const CategoriesController = require("../controllers/categories.controller");
@@ -104,6 +105,17 @@ const router = express.Router();
  *     summary: Get Categories
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: integer
+ *           description: page size
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: number of page
  *     tags: [Categories]
  *     responses:
  *       200:
@@ -144,7 +156,13 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/", auth, verifyAdmin, CategoriesController.findAll);
+router.get(
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(getCategoriesByPage),
+  CategoriesController.findAll
+);
 
 /**
  * @swagger

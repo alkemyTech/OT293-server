@@ -1,3 +1,22 @@
+const getCategoriesByPage = {
+  page: {
+    in: "query",
+    optional: true,
+    trim: true,
+    isInt: {
+      errorMessage: "It must be an integer",
+    },
+  },
+  size: {
+    in: "query",
+    optional: true,
+    trim: true,
+    isInt: {
+      errorMessage: "It must be an integer",
+    },
+  },
+};
+
 const createCategorySchema = {
   name: {
     in: "body",
@@ -61,4 +80,5 @@ const updateCategorySchema = {
 module.exports = {
   updateCategorySchema,
   createCategorySchema,
+  getCategoriesByPage,
 };
