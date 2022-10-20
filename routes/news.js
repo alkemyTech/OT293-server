@@ -39,14 +39,16 @@ const router = express.Router();
  *         name: News name
  *         content: Content of news
  *         image: https://image.com/photo.png
- */ 
+ */
 
 /**
  * @swagger
  * /news/{id}:
  *   get:
- *     summary: return a news 
+ *     summary: return a news
  *     tags: [News]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -70,14 +72,45 @@ const router = express.Router();
 
 router.get("/:id", auth, verifyAdmin, NewController.findOne);
 
+/**
+ * @swagger
+ * /news/{id}/comments:
+ *   get:
+ *     summary: returns new's comments
+ *     tags: [News]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *            type: string
+ *            required: true
+ *            description: the comment's id
+ *     responses:
+ *       200:
+ *         description: OK - returns all comments
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                $ref: '#/components/schemas/News'
+ *       404:
+ *         description: new not found
+ *       500:
+ *         description: Internal server error
+ */
+
 router.get("/:id/comments", auth, NewController.findComments);
 
 /**
  * @swagger
  * /news:
  *   post:
- *     summary: create a new news 
+ *     summary: create a new news
  *     tags: [News]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -99,14 +132,23 @@ router.get("/:id/comments", auth, NewController.findComments);
  *         description: Internal server error
  */
 
-router.post("/", auth, verifyAdmin, checkSchema(createNewSchema), dataValidator, NewController.store);
+router.post(
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(createNewSchema),
+  dataValidator,
+  NewController.store
+);
 
 /**
  * @swagger
  * /news/{id}:
  *   put:
- *     summary: update a news 
+ *     summary: update a news
  *     tags: [News]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -128,14 +170,16 @@ router.post("/", auth, verifyAdmin, checkSchema(createNewSchema), dataValidator,
  *         description: news not found
  */
 
- router.put("/:id", auth, verifyAdmin, NewController.update);
+router.put("/:id", auth, verifyAdmin, NewController.update);
 
 /**
  * @swagger
  * /news/{id}:
  *   delete:
- *     summary: delete a news 
+ *     summary: delete a news
  *     tags: [News]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
