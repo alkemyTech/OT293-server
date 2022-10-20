@@ -102,12 +102,7 @@ class CategoriesController {
       }
 
       const { id } = req.params;
-
-      console.log(id);
-
       const category = await db.Categories.findByPk(id);
-
-      console.log(category);
 
       if (!category) {
         return res.status(404).json({ message: "Category not found" });

@@ -182,9 +182,9 @@ router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
  *         application/json:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Create category'
+ *             $ref: '#/components/schemas/Update category'
  *     responses:
- *       200:
+ *       201:
  *         description: Successful request
  *         content:
  *           application/json:
