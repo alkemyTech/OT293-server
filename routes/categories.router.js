@@ -380,8 +380,11 @@ router.put(
  *                type: object
  *                properties:
  *                  data:
- *                    type: integer
- *                    example: 1
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
  *       401:
  *         description: Unauthorized
  *         content:
