@@ -9,14 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       order: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       text: {
         type: Sequelize.STRING
       },
-      imageUrl: {
+      image: {
         type: Sequelize.STRING,
-        field: "image_url",
       },
       organizationId: {
         type: Sequelize.INTEGER,
