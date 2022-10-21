@@ -156,11 +156,6 @@ const router = express.Router();
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: size
- *         schema:
- *           type: integer
- *           description: page size
- *       - in: query
  *         name: page
  *         schema:
  *           type: integer
@@ -179,9 +174,15 @@ const router = express.Router();
  *                    items:
  *                      oneOf:
  *                        - $ref: '#/components/schemas/Get new'
- *                  pages:
+ *                  totalPages:
  *                    type: integer
  *                    example: 6
+ *                  previousPage:
+ *                    type: string
+ *                    example: https://mysite/news?page=1
+ *                  nextPage:
+ *                    type: string
+ *                    example: https://mysite/mews?page=2
  *       403:
  *         description: Forbidden
  *         content:

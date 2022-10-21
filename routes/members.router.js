@@ -1,17 +1,26 @@
-const express = require('express');
+const express = require("express");
 
 const auth = require("../middlewares/auth");
-const verifyAdmin = require('../middlewares/admin');
+const verifyAdmin = require("../middlewares/admin");
 const { checkSchema } = require("express-validator");
-const { deleteMemberSchema } = require("../schemas/member.schema");
+const {
+  deleteMemberSchema,
+  createMemberSchema,
+  updateMemberSchema,
+} = require("../schemas/member.schema");
 const { dataValidator } = require("../middlewares/validator");
 const MemberController = require("../controllers/members.controller");
- 
+
 const router = express.Router();
- 
+
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *   schemas:
  *     Member:
  *       type: object
@@ -23,8 +32,6 @@ const router = express.Router();
  *         name:
  *           type: string
  *           example: Martin Perez
- *         image:
- *           type: string
  *         facebookUrl:
  *           type: string
  *           example: fb.com/MartinPerez
@@ -34,10 +41,24 @@ const router = express.Router();
  *         linkedinUrl:
  *           type: string
  *           example: linkedin.com/MartinPerez
- *       required:
- *       - id
- *       - name
- *       - image
+ *         image:
+ *           type: string
+ *           example: https://myimage.com/photo.jpg
+ *         description:
+ *           type: string
+ *           example: I'm a memeber
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *           example: null
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2017-07-21T17:32:28Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2017-07-21T17:32:28Z
  *     Member Request Post:
  *       type: object
  *       properties:
@@ -46,53 +67,61 @@ const router = express.Router();
  *           example: Martin Perez
  *         image:
  *           type: string
+ *           example: https://myimage.com/photo.jpg
  *         facebookUrl:
  *           type: string
- *           example: fb.com/MartinPerez
+ *           example: https://fb.com/MartinPerez
  *         instagramUrl:
  *           type: string
- *           example: ig.com/MartinPerez
+ *           example: https://ig.com/MartinPerez
  *         linkedinUrl:
  *           type: string
- *           example: linkedin.com/MartinPerez
+ *           example: https://linkedin.com/MartinPerez
+ *         description:
+ *           type: string
+ *           example: I'm a memeber
  *       required:
  *       - name
  *       - image
- *     requestBodies:
- *      Member:
- *       description: Member Object
- *       content:
- *        aplication/json:
- *         schema:
- *          $ref:#/components/schemas/Member
- *     securitySchemes:
- *       bearer_auth:
- *        type: http
- *        schema: bearer
+ *     Member Request Put:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: Martin Perez
+ *         image:
+ *           type: string
+ *           example: https://myimage.com/photo.jpg
+ *         facebookUrl:
+ *           type: string
+ *           example: https://fb.com/MartinPerez
+ *         instagramUrl:
+ *           type: string
+ *           example: https://ig.com/MartinPerez
+ *         linkedinUrl:
+ *           type: string
+ *           example: https://linkedin.com/MartinPerez
+ *         description:
+ *           type: string
+ *           example: I'm a memeber
  */
- 
+
 /**
  * @swagger
  * tags:
  *   name: Members
  *   description: Everything about ONG members endpoints
  */
- 
+
 /**
  * @swagger
  * /members:
  *   get:
  *     summary: Get all members
  *     security:
- *       - bearer_auth: []
+ *       - bearerAuth: []
  *     tags: [Members]
  *     parameters:
- *     - name: token
- *       in: header
- *       required: true
- *       description: Admin token.
- *       schema:
- *        type: string
  *     - name: page
  *       in: query
  *       description: Get members by page
@@ -101,30 +130,33 @@ const router = express.Router();
  *     operationId: findAllMembers
  *     responses:
  *       200:
- *         description: successful operation
+ *         description: Successful request
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
- *                  count:
- *                    type: integer
- *                    example: 123 
- *                  rows:
+ *                properties:
+ *                  data:
  *                    type: array
  *                    items:
- *                     $ref: "#/components/schemas/Member"
- *                  previousPageUrl:
+ *                      oneOf:
+ *                        - $ref: '#/components/schemas/Member'
+ *                  totalPages:
+ *                    type: integer
+ *                    example: 6
+ *                  previousPage:
  *                    type: string
- *                  nextPageUrl:
+ *                    example: https://mysite/members?page=1
+ *                  nextPage:
  *                    type: string
+ *                    example: https://mysite/members?page=2
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -134,7 +166,7 @@ const router = express.Router();
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -143,13 +175,9 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
- 
-router.get('/',
-  auth,
-  verifyAdmin,
-  MemberController.getMembers
-);
- 
+
+router.get("/", auth, verifyAdmin, MemberController.findAll);
+
 /**
  * @swagger
  * /members:
@@ -157,16 +185,8 @@ router.get('/',
  *     summary: Create a new member
  *     tags: [Members]
  *     security:
- *       - bearer_auth: []
- *     parameters:
- *       -  name: token
- *          in: header
- *          required: true
- *          description: Admin token
- *          schema:
- *           type: string
+ *       - bearerAuth: []
  *     requestBody:
- *       description: Update and existent member
  *       required: true
  *       content:
  *         application/json:
@@ -174,80 +194,23 @@ router.get('/',
  *             type: object
  *             $ref: '#/components/schemas/Member Request Post'
  *     responses:
- *       200:
- *         description: Miembro creado correctamente
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *              schema:
- *                type: object
- *                properties: 
- *                  message:
- *                    type: string
- *                    example: Unauthorization. Please log in
- *       403:
- *         description: Forbidden
- *         content:
- *           application/json:
- *              schema:
- *                type: object
- *                properties: 
- *                  message:
- *                    type: string
- *                    example: You are not authorized to access this resource
- *       404:
- *         description: Campos obligatorios.
- *       500:
- *         description: Internal server error
- */
- 
-router.post('/',
-  auth,
-  verifyAdmin,
-  MemberController.createMember
-);
- 
-/**
- * @swagger
- * /members/:id:
- *   delete:
- *     summary: Delete a member
- *     parameters:
- *       - name: token
- *         in: header
- *         required: true
- *         description: Admin token.
- *         schema:
- *          type: string
- *       - name: id
- *         in: path
- *         description: Member id
- *         required: true
- *         schema:
- *          type: integer
- *          example: 4  
- *     security:
- *       - bearer_auth: []
- *     tags: [Members]
- *     responses:
- *       200:
- *         description: Successful operation
+ *       201:
+ *         description: Successful request
  *         content:
  *           application/json:
  *              schema:
  *                type: object
  *                properties:
- *                  deleted:
- *                    type: boolean
- *                    example: true
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Member'
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -257,70 +220,144 @@ router.post('/',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
+ *       500:
+ *         description: Internal server error
+ */
+
+router.post(
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(createMemberSchema),
+  dataValidator,
+  MemberController.create
+);
+
+/**
+ * @swagger
+ * /members/{id}:
+ *   delete:
+ *     summary: Delete a member
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *            type: integer
+ *            required: true
+ *            description: the member's id
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Members]
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                        description: member's id
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
  *       404:
- *         description: Member not found
+ *         description: member not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
  *       500:
  *         description: Internal server error
- *        
+ *
  */
- 
+
 router.delete(
-  '/:id',
+  "/:id",
   auth,
   verifyAdmin,
   checkSchema(deleteMemberSchema),
   dataValidator,
-  MemberController.deleteMember
+  MemberController.delete
 );
 
- 
- 
 /**
  * @swagger
- * /members/:id:
+ * /members/{id}:
  *   put:
  *     summary: Update a member
  *     parameters:
- *       - name: token
- *         in: header
- *         required: true
- *         description: Admin token
- *         schema:
- *          type: string
  *       - name: id
  *         in: path
  *         schema:
  *           type: integer
- *         required: true
- *         description: Member ID
+ *           required: true
+ *           description: Member ID
  *     security:
- *       - bearer_auth: []
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: '#/components/schemas/Member Request Put'
  *     tags: [Members]
  *     responses:
  *       200:
- *         description: Successful operation
+ *         description: member updated
  *         content:
  *           application/json:
  *              schema:
  *                type: object
  *                properties:
- *                 message:
- *                  type: string
- *                  example: Miembros actualizado con exito.
- *                 data:
- *                  type: string
- *                  example: [1, 4]
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Member'
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -330,18 +367,38 @@ router.delete(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
  *       404:
- *         description: Member Not Found
+ *         description: member not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
  *       500:
- *         description: Miembro no existe.
+ *         description: Internal server error
  */
- 
-router.put('/:id', verifyAdmin, MemberController.updateMember);
- 
- 
-module.exports = router;
 
+router.put(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(updateMemberSchema),
+  dataValidator,
+  MemberController.update
+);
+
+module.exports = router;

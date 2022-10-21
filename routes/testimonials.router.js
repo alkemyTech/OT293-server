@@ -103,11 +103,6 @@ const { dataValidator } = require("../middlewares/validator");
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: size
- *         schema:
- *           type: integer
- *           description: page size
- *       - in: query
  *         name: page
  *         schema:
  *           type: integer
@@ -115,13 +110,26 @@ const { dataValidator } = require("../middlewares/validator");
  *     tags: [Testimonials]
  *     responses:
  *       200:
- *         description: The list of testimonials
+ *         description: Successful request
  *         content:
  *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/createTestimonial'
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items:
+ *                      oneOf:
+ *                        - $ref: '#/components/schemas/getTestimonials'
+ *                  totalPages:
+ *                    type: integer
+ *                    example: 6
+ *                  previousPage:
+ *                    type: string
+ *                    example: https://mysite/testimonials?page=1
+ *                  nextPage:
+ *                    type: string
+ *                    example: https://mysite/testimonials?page=2
  *
  *       401:
  *         description: Unauthorized

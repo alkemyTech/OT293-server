@@ -1,74 +1,66 @@
-const db = require('../models/index');
+const db = require("../models/index");
 
 class ActivitiesController {
-  constructor() { }
+  constructor() {}
 
   // Get all Activitiess
   // Method: GET
-  static async getActivities(req, res) { }
+  static async findAll(req, res, next) {}
 
   // Get Activities by id
   // Method: GET
-  static async getActivitiesById(req, res) { }
+  static async findOne(req, res, next) {}
 
   // Create new Activities
   // Method: POST
-  static async createActivities(req, res) { 
+  static async create(req, res, next) {
     try {
       const { name, content, image } = req.body;
-      if (!(name && content)) { return res.status(404).send("Name y Content obligatorios") };
-      const container = await db.Activities.findOne({ where: { name: name.toLowerCase() } });
-      if (!container) {
+
+      const container = await db.Activities.findOne({
+        where: { name: name.toLowerCase() },
+      });
+
+      if (container) {
+        return res.status(409).json({ message: "It already exists" });
+      }
+
       const createActivity = await db.Activities.create({
         name: name.toLowerCase(),
         content,
-        image
+        image,
       });
-      createActivity ? res.send(createActivity) : res.status(404).send('Ocurrió un error durante la creación');
-    } else {
-      res.status(404).send('Ya existe una actividad con ese nombre, pruebe con otro');
-    }
+
+      res.status(201).json({ data: createActivity });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
   // Update all Activities data
   // Method: PUT
-  static async updateActivities(req, res) {
-    let activity = {};
-    const { id } = req.params;
-    const { name, content, image } = req.body;
-
+  static async update(req, res, next) {
     try {
-      activity = await db.Activities.findByPk(id);
+      const { id } = req.params;
+
+      const activity = await db.Activities.findByPk(id);
+
       if (!activity) {
-        return res.status(400).json({
-          msg: 'Activity does not exist',
+        return res.status(404).json({
+          message: "Activity does not exist",
         });
       }
-      activity.name = name;
-      activity.content = content;
-      activity.image = image;
-      const savedActivity = await activity.save();
-      return res.status(200).json({
-        msg: 'Activity was updated successfully',
-        savedActivity,
-      });
+
+      const updated = await activity.update(req.body);
+      return res.status(200).json({ data: updated });
     } catch (e) {
-      return res.status(400).json({
-        msg: `${e.message}`,
-      });
+      next(e);
     }
   }
 
-  // Partially update Activities data
-  // Method: PATCH
-  static async partialUpdateActivities(req, res) { }
-
   // Delete Activities from DB
   // Method: DELETE
-  static async deleteActivities(req, res) { }
+  static async delete(req, res, next) {}
 }
 
 module.exports = ActivitiesController;

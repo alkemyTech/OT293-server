@@ -43,7 +43,6 @@ const router = express.Router();
  *         - firstName
  *         - lastName
  *       example:
- *         id: 12
  *         email: email@email.com
  *         password: 1a2s23d4gf5
  *         image: https://myimage.com/photo.jpg
@@ -188,7 +187,7 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in

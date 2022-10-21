@@ -1,14 +1,14 @@
-const db = require('../models/index');
-const {decodeImage} = require('../services/image');
-const uploadImage = require('../helpers/uploadImage');
+const db = require("../models/index");
+const { decodeImage } = require("../services/image");
+const uploadImage = require("../helpers/uploadImage");
 
 class SlidesController {
   static async findAll(req, res, next) {
     try {
       const slides = await db.Slide.findAll({
-        attributes: ['order', 'imageUrl'],
+        attributes: ["order", "imageUrl"],
       });
-      res.json(slides);
+      res.json({ data: slides });
     } catch (e) {
       next(e);
     }
@@ -16,17 +16,15 @@ class SlidesController {
 
   static async findOne(req, res, next) {
     try {
-
       const { id } = req.params;
 
       const slide = await db.Slide.findByPk(id);
 
-      if(!slide) {
-        return res.status(404).json({message: 'Slide not found'});
+      if (!slide) {
+        return res.status(404).json({ message: "Slide not found" });
       }
 
-      res.json({data: slide});
-
+      res.json({ data: slide });
     } catch (e) {
       next(e);
     }
@@ -37,14 +35,12 @@ class SlidesController {
       const { imageUrl, text, organizationId } = req.body;
       let { order } = req.body;
       let imageInfo = decodeImage(imageUrl);
-  
-      let imageUri = await uploadImage(
-        imageInfo.datos
-      );
+
+      let imageUri = await uploadImage(imageInfo.datos);
       if (!order) {
         order = await db.Slide.count({
           where: {
-            organizationId
+            organizationId,
           },
         });
         order++;
@@ -83,16 +79,17 @@ class SlidesController {
     try {
       const { id } = req.params;
       const slide = await db.Slide.findOne({ where: { id } });
+
       if (!slide) {
-        res.status(404).json({ error: 'Slide not found' });
+        return res.status(404).json({ message: "Slide not found" });
       }
       const isDeleted = await db.Slide.destroy({ where: { id } });
       if (!isDeleted) {
-        res.status(500).json({ error: 'Slide could not be deleted' });
+        return res.status(500).json({ error: "Slide could not be deleted" });
       }
       res.json({
         data: {
-          message: 'Slide has been deleted correctly',
+          id,
         },
       });
     } catch (e) {
