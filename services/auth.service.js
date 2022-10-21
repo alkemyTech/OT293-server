@@ -56,7 +56,7 @@ class AuthService {
 
     const message = {
       to: email,
-      form: process.env.SENDGRID_EMAIL,
+      from: process.env.SENDGRID_EMAIL,
       subject: title,
       text,
       html: welcomeEmail(title, text, contact),
