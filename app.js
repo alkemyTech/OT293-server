@@ -10,19 +10,19 @@ require("dotenv").config();
 const { swaggerDocs } = require("./routes/docs/swagger");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const organizationsRouter = require("./routes/organizations");
+const usersRouter = require("./routes/users.router");
+const organizationsRouter = require("./routes/organizations.router");
 const newsRouter = require("./routes/news.router");
 const membersRouter = require("./routes/members.router");
 const categoriesRouter = require("./routes/categories.router");
-const fileUploadRouter = require("./routes/upload");
-const authRouter = require("./routes/auth");
-const backOfficeRouter = require("./routes/backOffice");
-const slidesRouter = require("./routes/slides");
+const fileUploadRouter = require("./routes/upload.router");
+const authRouter = require("./routes/auth.router");
+const backOfficeRouter = require("./routes/back-office.router");
+const slidesRouter = require("./routes/slides.router");
 const testimonialsRouter = require("./routes/testimonials.router");
-const contactsRouter = require("./routes/contacts");
-const activitiesRouter = require("./routes/activities");
-const commentsRouter = require("./routes/comments");
+const contactsRouter = require("./routes/contacts.router");
+const activitiesRouter = require("./routes/activities.router");
+const commentsRouter = require("./routes/comments.router");
 
 const app = express();
 app.use(cors());
