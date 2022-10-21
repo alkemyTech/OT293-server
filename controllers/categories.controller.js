@@ -83,11 +83,11 @@ class CategoriesController {
       const { id } = req.params;
       const category = await db.Categories.findOne({ where: { id } });
       if (!category) {
-        res.status(404).json({ error: "Category not found" });
+        return res.status(404).json({ error: "Category not found" });
       }
       const isDeleted = await db.Categories.destroy({ where: { id } });
       if (!isDeleted) {
-        res.status(500).json({ error: "Category could not be deleted" });
+        return res.status(500).json({ error: "Category could not be deleted" });
       }
       res.json({
         data: {
