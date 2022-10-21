@@ -1,4 +1,5 @@
 const AuthService = require('../services/auth.service');
+const { uploadfile } = require('../utils/s3');
 
 class AuthController {
   // Returns token with user's information

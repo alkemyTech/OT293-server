@@ -1,20 +1,24 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const fs = require("fs");
+const fs = require('fs');
 
-const config = require("../config/config").development;
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const client = new S3Client({
-  region: config.awsBucketRegion,
+  region: process.env.AWS_BUCKET_REGION,
   credentials: {
-    accessKeyId: config.awsAccessKey,
-    secretAccessKey: config.awsSecretAccessKey,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
 
 const uploadfile = async (file) => {
   const stream = fs.createReadStream(file.tempFilePath);
   const uploadParams = {
-    Bucket: config.awsBucketName,
+    Bucket: process.env.AWS_BUCKET_NAME,
     Key: `${file.name}`,
     Body: stream,
   };
@@ -22,4 +26,12 @@ const uploadfile = async (file) => {
   return await client.send(command);
 };
 
-module.exports = client;
+const getSignUrl = async (filename) => {
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: filename,
+  });
+  return await getSignedUrl(client, command, { expiresIn: 3600 });
+};
+
+module.exports = { uploadfile, getSignUrl };

@@ -1,11 +1,12 @@
-const bcrypt = require('bcrypt');
-const sgMail = require('@sendgrid/mail');
+const bcrypt = require("bcrypt");
+const sgMail = require("@sendgrid/mail");
 
 const Jwt = require('../utils/jwt');
 const welcomeEmail = require('../templates/welcomeEmail');
+const { getSignUrl } = require('../utils/s3');
 
 // Models
-const db = require('../models/index');
+const db = require("../models/index");
 
 class AuthService {
   static async login(data) {
@@ -19,7 +20,7 @@ class AuthService {
     const user = await this.getUserByEmail(email);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error('wrong email or password');
+      throw new Error("wrong email or password");
     }
     return user;
   }
@@ -31,7 +32,7 @@ class AuthService {
       },
     });
     if (!user) {
-      throw new Error('wrong email or password');
+      throw new Error("wrong email or password");
     }
     return user;
   }
@@ -50,13 +51,13 @@ class AuthService {
   }
 
   static async sendWelcomeEmail(email) {
-    const title = '¡Bienvenid@s a nuestra ONG!';
-    const text = 'Cualquier duda que tengas, no dudes en contactarnos';
-    const contact = '';
+    const title = "¡Bienvenid@s a nuestra ONG!";
+    const text = "Cualquier duda que tengas, no dudes en contactarnos";
+    const contact = "";
 
     const message = {
       to: email,
-      form: 'ong@mail.com',
+      from: process.env.SENDGRID_EMAIL,
       subject: title,
       text,
       html: welcomeEmail(title, text, contact),
@@ -75,10 +76,18 @@ class AuthService {
   }
 
   static async getUserById(id) {
-    const user = db.User.findByPk(id, {
+    const user = await db.User.findByPk(id, {
       attributes: ['firstName', 'lastName', 'image', 'email'],
     });
-    return user;
+
+    // Get image url from AWS S3
+    const filename = user.dataValues.image;
+    const imageUrl = await getSignUrl(filename)
+
+    return { 
+      ...user.dataValues,
+      image: imageUrl 
+    };
   }
 }
 

@@ -41,16 +41,6 @@ const registerSchema = {
       options: { min: 5 },
     },
   },
-  image: {
-    in: "body",
-    notEmpty: {
-      errorMessage: "It must not be empty",
-    },
-    isURL: {
-      errorMessage: "It must be an url",
-    },
-    trim: true,
-  },
   firstName: {
     in: "body",
     notEmpty: {

@@ -1,12 +1,18 @@
-const express = require('express');
+const express = require("express");
 
-const { checkSchema } = require('express-validator')
+const { checkSchema } = require("express-validator");
 
-const { updateCategorySchema } = require('../schemas/category.schema');
+const {
+  updateCategorySchema,
+  createCategorySchema,
+  getCategoriesByPage,
+} = require("../schemas/category.schema");
 
-const CategoriesController = require('../controllers/categories.controller');
-const auth = require('../middlewares/auth');
-const verifyAdmin = require('../middlewares/admin');
+const CategoriesController = require("../controllers/categories.controller");
+const auth = require("../middlewares/auth");
+const verifyAdmin = require("../middlewares/admin");
+const { dataValidator } = require("../middlewares/validator");
+const { uploadImage } = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
@@ -19,6 +25,35 @@ const router = express.Router();
  *       scheme: bearer
  *       bearerFormat: JWT
  *   schemas:
+ *     Get category:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: category's name
+ *         image:
+ *           type: string
+ *           description: Category's photo (url)
+ *         description:
+ *           type: string
+ *           description: description of Category
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *       example:
+ *         id: 1
+ *         name: Category 1
+ *         image: https://myimage.com/photo.jpg
+ *         description: Category
+ *         createdAt: 2017-07-21T17:32:28Z
+ *         updatedAt: 2017-07-21T17:32:28Z
+ *         deletedAt: null
  *     Create category:
  *       type: object
  *       properties:
@@ -36,7 +71,6 @@ const router = express.Router();
  *         - description
  *         - image
  *       example:
- *         id: 1
  *         name: Category 1
  *         image: https://myimage.com/photo.jpg
  *         description: Category
@@ -53,7 +87,6 @@ const router = express.Router();
  *           type: string
  *           description: description of Category
  *       example:
- *         id: 1
  *         name: Category 1.1
  *         image: https://myimage.com/photo.jpg
  *         description: Category 1.1
@@ -73,6 +106,12 @@ const router = express.Router();
  *     summary: Get Categories
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: number of page
  *     tags: [Categories]
  *     responses:
  *       200:
@@ -81,13 +120,28 @@ const router = express.Router();
  *           application/json:
  *              schema:
  *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items:
+ *                      oneOf:
+ *                        - $ref: '#/components/schemas/Get category'
+ *                  totalPages:
+ *                    type: integer
+ *                    example: 6
+ *                  previousPage:
+ *                    type: string
+ *                    example: https://mysite/categories?page=1
+ *                  nextPage:
+ *                    type: string
+ *                    example: https://mysite/categories?page=2
  *       403:
  *         description: Forbidden
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -97,22 +151,24 @@ const router = express.Router();
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
  *       500:
  *         description: Internal server error
  */
-router.get('/', 
-    auth, 
-    verifyAdmin, 
-    CategoriesController.findAll
+router.get(
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(getCategoriesByPage),
+  CategoriesController.findAll
 );
 
 /**
  * @swagger
- * /categories/:id:
+ * /categories/{id}:
  *   get:
  *     summary: Get Category
  *     parameters:
@@ -132,14 +188,17 @@ router.get('/',
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -149,7 +208,7 @@ router.get('/',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -159,23 +218,18 @@ router.get('/',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Category not found
  *       500:
  *         description: Internal server error
  */
-router.get(
-    '/:id', 
-    auth,
-    verifyAdmin, 
-    CategoriesController.findOne
-);
+router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
 
 /**
  * @swagger
- * /Categories:
+ * /categories:
  *   post:
  *     summary: Create category
  *     tags: [Categories]
@@ -184,35 +238,65 @@ router.get(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Create category'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     responses:
- *       200:
+ *       201:
  *         description: Successful request
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Something is wrong with req.body
  *       404:
  *         description: Name (req.body) Not Found
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: La categoría debe contener un nombre obligatoriamente
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       403:
  *         description: Forbidden
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -220,17 +304,34 @@ router.get(
  *         description: Internal server error
  */
 router.post(
-    '/', 
-    auth,
-    verifyAdmin, 
-    CategoriesController.create
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(createCategorySchema),
+  dataValidator,
+  uploadImage,
+  CategoriesController.create
 );
 
 /**
  * @swagger
- * /categories/:id:
+ * /categories/{id}:
  *   put:
  *     summary: Update Category
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     parameters:
  *       - in: path
  *         name: id
@@ -248,14 +349,17 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Update category'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get category'
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -265,7 +369,7 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -275,7 +379,7 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Category not found
@@ -285,23 +389,26 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Something is wrong with req.body
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', 
-    auth,
-    verifyAdmin,
-    checkSchema(updateCategorySchema),
-    CategoriesController.update
+router.put(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(updateCategorySchema),
+  dataValidator,
+  uploadImage,
+  CategoriesController.update
 );
 
 /**
  * @swagger
- * /categories/:id:
+ * /categories/{id}:
  *   delete:
  *     summary: Delete Category
  *     parameters:
@@ -321,17 +428,20 @@ router.put('/:id',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
- *                  message:
- *                    type: string
- *                    example: Category has been deleted correctly
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -341,7 +451,7 @@ router.put('/:id',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
@@ -351,7 +461,7 @@ router.put('/:id',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Category not found
@@ -361,16 +471,11 @@ router.put('/:id',
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Category could not be deleted
  */
-router.delete(
-    '/:id', 
-    auth,
-    verifyAdmin, 
-    CategoriesController.delete
-);
+router.delete("/:id", auth, verifyAdmin, CategoriesController.delete);
 
 module.exports = router;

@@ -1,11 +1,13 @@
-const { uploadfile } = require("../utils/s3");
+const { uploadfile, getSignUrl } = require('../utils/s3');
 
 class uploadController {
   // method to upload files to s3
   static async uploadfile(req, res, next) {
     try {
-      const result = await uploadfile(req.files.file);
-      res.send({ result });
+      const { file } = req.files;
+      await uploadfile(file);
+      const url = await getSignUrl(file.name);
+      res.send({ url });
     } catch (e) {
       next(e);
     }

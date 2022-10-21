@@ -1,45 +1,13 @@
-const { validationResult } = require('express-validator');
+const { pagination } = require('../helpers/pagination');
+const { getSignUrl } = require('../utils/s3');
+
 const db = require('../models/index');
 
 class CategoriesController {
   static async findAll(req, res, next) {
     try {
-      const { page = 0 } = req.query;
-      const CATEGORIES_IN_A_PAGE = 10;
-
-      const options = {
-        limit: CATEGORIES_IN_A_PAGE,
-        offset: (page + 1) * CATEGORIES_IN_A_PAGE,
-        attributes: ['name'],
-      };
-
-      const { count, rows } = await db.Categories.findAndCountAll(options);
-      let previousPageUrl;
-      let nextPageUrl;
-
-      if (page > Math.ceil(count / CATEGORIES_IN_A_PAGE)) {
-        res.status(422).json({ error: 'Invalid page' });
-      }
-
-      const URL_BASE = `${req.protocol}://${req.get('host')}${req.originalUrl}?page=`;
-
-      if (page === 0) {
-        previousPageUrl = null;
-      } else {
-        previousPageUrl = `${URL_BASE}${page - 1}`;
-      }
-
-      if (page === Math.ceil(count / CATEGORIES_IN_A_PAGE)) {
-        nextPageUrl = null;
-      } else {
-        nextPageUrl += `${URL_BASE}${page + 1}`;
-      }
-
-      res.json({
-        data: {
-          count, categories: rows, previousPageUrl, nextPageUrl,
-        },
-      });
+      const page = await pagination(req, 'Categories');
+      res.json(page);
     } catch (error) {
       next(error);
     }
@@ -48,70 +16,61 @@ class CategoriesController {
   static async findOne(req, res, next) {
     try {
       const { id } = req.params;
-      const category = await db.Categories.findOne({
-        where: { id },
-        include: {
-          attributes: ['name', 'description', 'image'],
-          through: { attributes: [] },
-        },
-      });
+      const category = await db.Categories.findByPk(id);
 
       if (!category) {
         return res.status(404).json({ message: 'Category not found' });
       }
-      return res.status(200).json(category);
+      return res.status(200).json({ data: category });
     } catch (error) {
-      console.log(error.message);
+      next(error);
     }
   }
 
   static async create(req, res, next) {
     try {
-      // Obtener información.
       const { name, description, image } = req.body;
-      console.log('le llega: ', req.body);
-      // Validar name
-      if (!name) { res.status(404).send('La categoría debe contener un nombre obligatoriamente'); }
 
-      //  Buscar categoría
-      const container = await db.Categories.findOne({ where: { name: name.toLowerCase() } });
-
-      // Si no existe el nombre, crear categoría
-      if (!container) {
-        const newCategory = await db.Categories.create({
-          name: name.toLowerCase(),
+      const [category, created] = await db.Categories.findOrCreate({
+        where: { name },
+        defaults: {
+          name,
           description,
           image,
-        });
-        res.send('Categoría creada correctamente!');
+        },
+      });
+
+      if (created) {
+        //Get image url from aws
+        const imageUrl = await getSignUrl(image);
+        return res
+          .status(201)
+          .json({ data: { ...category.dataValues, image: imageUrl } });
       } else {
-      // Si existe el nombre
-        res.status(404).send('Ya existe una categoría con ese nombre, intente con otra.');
+        return res
+          .status(400)
+          .json({ message: `Category: ${name} already exists` });
       }
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   }
 
   static async update(req, res, next) {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const { id } = req.params;
 
       const category = await db.Categories.findByPk(id);
-
       if (!category) {
         return res.status(404).json({ message: 'Category not found' });
       }
 
       const categoryUpdated = await category.update(req.body);
 
-      res.json({ data: categoryUpdated });
+      //Get image url from aws
+      const imageUrl = await getSignUrl(categoryUpdated.dataValues.image);
+
+      res.json({ data: { ...categoryUpdated.dataValues, image: imageUrl } });
     } catch (e) {
       next(e);
     }
@@ -122,15 +81,15 @@ class CategoriesController {
       const { id } = req.params;
       const category = await db.Categories.findOne({ where: { id } });
       if (!category) {
-        res.status(404).json({ error: 'Category not found' });
+        return res.status(404).json({ error: 'Category not found' });
       }
       const isDeleted = await db.Categories.destroy({ where: { id } });
       if (!isDeleted) {
-        res.status(500).json({ error: 'Category could not be deleted' });
+        return res.status(500).json({ error: 'Category could not be deleted' });
       }
       res.json({
         data: {
-          message: 'Category has been deleted correctly',
+          id: idDeleted.id,
         },
       });
     } catch (e) {

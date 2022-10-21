@@ -5,6 +5,7 @@ const AuthController = require("../controllers/auth.controller");
 const { loginSchema, registerSchema } = require("../schemas/auth.schema");
 const { dataValidator } = require("../middlewares/validator");
 const auth = require("../middlewares/auth");
+const { uploadImage } = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
@@ -39,11 +40,9 @@ const router = express.Router();
  *       required:
  *         - email
  *         - password
- *         - image
  *         - firstName
  *         - lastName
  *       example:
- *         id: 12
  *         email: email@email.com
  *         password: 1a2s23d4gf5
  *         image: https://myimage.com/photo.jpg
@@ -63,8 +62,8 @@ const router = express.Router();
  *         - email
  *         - password
  *       example:
- *         email: email@email.com
- *         password: 1a2s23d4gf5
+ *         email: admin1@mail.com
+ *         password: admin 1
  *     Profile:
  *       type: object
  *       properties:
@@ -103,10 +102,22 @@ const router = express.Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Register user'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *     responses:
  *       200:
  *         description: User has been registered
@@ -127,6 +138,7 @@ router.post(
   "/register",
   checkSchema(registerSchema),
   dataValidator,
+  uploadImage,
   AuthController.register
 );
 
@@ -188,7 +200,7 @@ router.post(
  *           application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in

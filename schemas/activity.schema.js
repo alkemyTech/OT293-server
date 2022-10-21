@@ -1,21 +1,17 @@
-/**
- * These schemas are used to validate data with express-validator,
- * The schemas are passed to the function checkSchema()
- */
-
-const createNewSchema = {
+const createActivitySchema = {
   name: {
     in: "body",
+    trim: true,
     notEmpty: {
       errorMessage: "It must not be empty",
     },
     isString: {
       errorMessage: "It must be a string",
     },
-    trim: true,
   },
   content: {
     in: "body",
+    trim: true,
     notEmpty: {
       errorMessage: "It must not be empty",
     },
@@ -23,44 +19,44 @@ const createNewSchema = {
       errorMessage: "It must be a string",
     },
   },
-  categoryId: {
+  image: {
     in: "body",
-    notEmpty: {
-      errorMessage: "It must not be empty",
-    },
-    isInt: {
-      errorMessage: "It must be a Number",
+    optional: true,
+    trim: true,
+    isURL: {
+      errorMessage: "It must be a string",
     },
   },
 };
 
-const updateNewSchema = {
+const updateActivitySchema = {
   name: {
     in: "body",
-    trim: true,
     optional: true,
+    trim: true,
     isString: {
       errorMessage: "It must be a string",
     },
   },
   content: {
     in: "body",
-    trim: true,
     optional: true,
+    trim: true,
     isString: {
       errorMessage: "It must be a string",
     },
   },
-  categoryId: {
+  image: {
     in: "body",
     optional: true,
-    isInt: {
-      errorMessage: "It must be a Number",
+    trim: true,
+    isURL: {
+      errorMessage: "It must be a string",
     },
   },
 };
 
 module.exports = {
-  createNewSchema,
-  updateNewSchema,
+  createActivitySchema,
+  updateActivitySchema,
 };
