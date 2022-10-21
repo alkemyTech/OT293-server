@@ -31,43 +31,36 @@ class MemberController {
 
   // Update all member data
   // Method: PUT
-  static async updateMember(req, res, next) {
-    const { id } = req.params;
-    const data = req.body;
-
+  static async update(req, res, next) {
     try {
+      const { id } = req.params;
       const member = await db.Member.findByPk(id);
+
       if (!member) {
-        res.status(404).json({ msg: "Miembro no existe" });
+        return res.status(404).json({ message: "Not found" });
       }
 
-      const update = await member.update(data);
+      const update = await member.update(req.body);
 
-      res
-        .status(200)
-        .json({ msg: "Miembro Actualizado con exito", data: update });
+      res.status(200).json({ data: update });
     } catch (error) {
       next(error);
     }
   }
 
-  // Partially update member data
-  // Method: PATCH
-  static async partialUpdateMember(req, res) {}
-
   // Delete member from DB
   // Method: DELETE
-  static async deleteMember(req, res, next) {
+  static async delete(req, res, next) {
     try {
       const { id } = req.params;
 
       const member = await db.Member.findByPk(id);
       if (!member) {
-        res.status(404).json({ error: "member Not Found" });
+        return res.status(404).json({ message: "Not found" });
       }
 
       await member.destroy();
-      res.json({ deleted: true });
+      res.json({ data: { id: Number.parseInt(id) } });
     } catch (err) {
       next(err);
     }

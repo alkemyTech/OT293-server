@@ -6,6 +6,7 @@ const { checkSchema } = require("express-validator");
 const {
   deleteMemberSchema,
   createMemberSchema,
+  updateMemberSchema,
 } = require("../schemas/member.schema");
 const { dataValidator } = require("../middlewares/validator");
 const MemberController = require("../controllers/members.controller");
@@ -239,37 +240,34 @@ router.post(
 
 /**
  * @swagger
- * /members/:id:
+ * /members/{id}:
  *   delete:
  *     summary: Delete a member
  *     parameters:
- *       - name: token
- *         in: header
- *         required: true
- *         description: Admin token.
+ *       - in: path
+ *         name: id
  *         schema:
- *          type: string
- *       - name: id
- *         in: path
- *         description: Member id
- *         required: true
- *         schema:
- *          type: integer
- *          example: 4
+ *            type: integer
+ *            required: true
+ *            description: the member's id
  *     security:
- *       - bearer_auth: []
+ *       - bearerAuth: []
  *     tags: [Members]
  *     responses:
  *       200:
- *         description: Successful operation
+ *         description: Ok
  *         content:
  *           application/json:
  *              schema:
  *                type: object
  *                properties:
- *                  deleted:
- *                    type: boolean
- *                    example: true
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                        description: member's id
  *       401:
  *         description: Unauthorized
  *         content:
@@ -291,7 +289,15 @@ router.post(
  *                    type: string
  *                    example: You are not authorized to access this resource
  *       404:
- *         description: Member not found
+ *         description: member not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
  *       500:
  *         description: Internal server error
  *
@@ -303,44 +309,42 @@ router.delete(
   verifyAdmin,
   checkSchema(deleteMemberSchema),
   dataValidator,
-  MemberController.deleteMember
+  MemberController.delete
 );
 
 /**
  * @swagger
- * /members/:id:
+ * /members/{id}:
  *   put:
  *     summary: Update a member
  *     parameters:
- *       - name: token
- *         in: header
- *         required: true
- *         description: Admin token
- *         schema:
- *          type: string
  *       - name: id
  *         in: path
  *         schema:
  *           type: integer
- *         required: true
- *         description: Member ID
+ *           required: true
+ *           description: Member ID
  *     security:
- *       - bearer_auth: []
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: '#/components/schemas/Member Request Put'
  *     tags: [Members]
  *     responses:
  *       200:
- *         description: Successful operation
+ *         description: member updated
  *         content:
  *           application/json:
  *              schema:
  *                type: object
  *                properties:
- *                 message:
- *                  type: string
- *                  example: Miembros actualizado con exito.
- *                 data:
- *                  type: string
- *                  example: [1, 4]
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Member'
  *       401:
  *         description: Unauthorized
  *         content:
@@ -362,11 +366,33 @@ router.delete(
  *                    type: string
  *                    example: You are not authorized to access this resource
  *       404:
- *         description: Member Not Found
+ *         description: member not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
  *       500:
- *         description: Miembro no existe.
+ *         description: Internal server error
  */
 
-router.put("/:id", verifyAdmin, MemberController.updateMember);
+router.put(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(updateMemberSchema),
+  dataValidator,
+  MemberController.update
+);
 
 module.exports = router;
