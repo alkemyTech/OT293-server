@@ -4,6 +4,8 @@ const db = require("../models/index");
 class TestimonialsController {
   static async create(req, res, next) {
     try {
+      const { name } = req.body;
+
       const existentTestimonial = await db.Testimonials.findOne({
         where: { name: name.toLowerCase() },
       });

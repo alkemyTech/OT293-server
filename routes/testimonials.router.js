@@ -98,6 +98,17 @@ const { dataValidator } = require("../middlewares/validator");
  *     summary: Get all testimonials
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: integer
+ *           description: page size
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: number of page
  *     tags: [Testimonials]
  *     responses:
  *       200:
