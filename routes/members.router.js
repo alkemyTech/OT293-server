@@ -141,9 +141,15 @@ const router = express.Router();
  *                    items:
  *                      oneOf:
  *                        - $ref: '#/components/schemas/Member'
- *                  pages:
+ *                  totalPages:
  *                    type: integer
  *                    example: 6
+ *                  previousPage:
+ *                    type: string
+ *                    example: https://mysite/members?page=1
+ *                  nextPage:
+ *                    type: string
+ *                    example: https://mysite/members?page=2
  *       401:
  *         description: Unauthorized
  *         content:
