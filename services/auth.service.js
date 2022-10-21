@@ -1,11 +1,11 @@
-const bcrypt = require('bcrypt');
-const sgMail = require('@sendgrid/mail');
+const bcrypt = require("bcrypt");
+const sgMail = require("@sendgrid/mail");
 
-const Jwt = require('../utils/jwt');
-const welcomeEmail = require('../templates/welcomeEmail');
+const Jwt = require("../utils/jwt");
+const welcomeEmail = require("../templates/welcomeEmail");
 
 // Models
-const db = require('../models/index');
+const db = require("../models/index");
 
 class AuthService {
   static async login(data) {
@@ -19,7 +19,7 @@ class AuthService {
     const user = await this.getUserByEmail(email);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error('wrong email or password');
+      throw new Error("wrong email or password");
     }
     return user;
   }
@@ -31,7 +31,7 @@ class AuthService {
       },
     });
     if (!user) {
-      throw new Error('wrong email or password');
+      throw new Error("wrong email or password");
     }
     return user;
   }
@@ -50,13 +50,13 @@ class AuthService {
   }
 
   static async sendWelcomeEmail(email) {
-    const title = '¡Bienvenid@s a nuestra ONG!';
-    const text = 'Cualquier duda que tengas, no dudes en contactarnos';
-    const contact = '';
+    const title = "¡Bienvenid@s a nuestra ONG!";
+    const text = "Cualquier duda que tengas, no dudes en contactarnos";
+    const contact = "";
 
     const message = {
       to: email,
-      form: 'ong@mail.com',
+      form: "ong@mail.com",
       subject: title,
       text,
       html: welcomeEmail(title, text, contact),
@@ -70,13 +70,13 @@ class AuthService {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       await sgMail.send(message);
     } catch (err) {
-      throw new Error(err);
+      // throw new Error(err);
     }
   }
 
   static async getUserById(id) {
     const user = db.User.findByPk(id, {
-      attributes: ['firstName', 'lastName', 'image', 'email'],
+      attributes: ["firstName", "lastName", "image", "email"],
     });
     return user;
   }

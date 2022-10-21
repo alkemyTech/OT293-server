@@ -1,25 +1,29 @@
-const Jwt = require('../utils/jwt');
+const Jwt = require("../utils/jwt");
 
-const db = require('../models/index');
+const db = require("../models/index");
 
 const auth = async (req, res, next) => {
   try {
-    const bearerHeader = req.get('authorization'); // Returns: 'Bearer <token>'
+    const bearerHeader = req.get("authorization"); // Returns: 'Bearer <token>'
     if (!bearerHeader) {
-      return res.status(401).json({ message: 'Unauthorization. Please log in' });
+      return res
+        .status(401)
+        .json({ message: "Unauthorization. Please log in" });
     }
-    const token = bearerHeader.split(' ').pop();
+    const token = bearerHeader.split(" ").pop();
     const payload = await Jwt.verifyToken(token);
 
-    if(!payload) {
-      return res.status(401).json({ message: 'Unauthorization. Please log in' });
+    if (!payload) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorization. Please log in" });
     }
 
     const user = await db.User.findByPk(payload.sub, {
-      attributes: ['id', 'roleId'],
+      attributes: ["id", "roleId"],
     });
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      return res.status(401).json({ message: "User not found" });
     }
 
     req.user = user.dataValues;
