@@ -377,6 +377,8 @@ router.put(
   auth,
   verifyAdmin,
   checkSchema(updateCategorySchema),
+  dataValidator,
+  uploadImage,
   CategoriesController.update
 );
 

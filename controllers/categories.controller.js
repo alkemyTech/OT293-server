@@ -1,7 +1,7 @@
-const { validationResult } = require('express-validator');
 const { pagination } = require('../helpers/pagination');
-const db = require('../models/index');
 const { getSignUrl } = require('../utils/s3');
+
+const db = require('../models/index');
 
 class CategoriesController {
   static async findAll(req, res, next) {
@@ -43,7 +43,9 @@ class CategoriesController {
       if (created) {
         //Get image url from aws
         const imageUrl = await getSignUrl(image);
-        return res.status(201).json({ data: { ...category.dataValues, image: imageUrl } });
+        return res
+          .status(201)
+          .json({ data: { ...category.dataValues, image: imageUrl } });
       } else {
         return res
           .status(400)
@@ -56,22 +58,19 @@ class CategoriesController {
 
   static async update(req, res, next) {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       const { id } = req.params;
-      const category = await db.Categories.findByPk(id);
 
+      const category = await db.Categories.findByPk(id);
       if (!category) {
         return res.status(404).json({ message: 'Category not found' });
       }
 
       const categoryUpdated = await category.update(req.body);
 
-      res.json({ data: categoryUpdated });
+      //Get image url from aws
+      const imageUrl = await getSignUrl(categoryUpdated.dataValues.image);
+
+      res.json({ data: { ...categoryUpdated.dataValues, image: imageUrl } });
     } catch (e) {
       next(e);
     }
