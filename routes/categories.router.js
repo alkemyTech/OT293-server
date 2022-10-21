@@ -238,10 +238,17 @@ router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Update category'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Successful request
@@ -273,6 +280,16 @@ router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
  *                  message:
  *                    type: string
  *                    example: La categoría debe contener un nombre obligatoriamente
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       403:
  *         description: Forbidden
  *         content:
@@ -304,10 +321,17 @@ router.post(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Create category'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     parameters:
  *       - in: path
  *         name: id
