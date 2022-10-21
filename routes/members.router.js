@@ -189,10 +189,23 @@ router.get("/", auth, verifyAdmin, MemberController.findAll);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Member Request Post'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               facebookUrl:
+ *                 type: string
+ *               instagramUrl:
+ *                 type: string
+ *               linkedinUrl:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Successful request
