@@ -113,6 +113,38 @@ const router = express.Router();
  *         content: Content of news
  *         image: https://image.com/photo.png
  *         categoryId: 1
+ *     Get comment:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: comment's id
+ *         body:
+ *           type: string
+ *           description: comment's body
+ *         userId:
+ *           type: integer
+ *           description: user's id that wrote the comment
+ *         newId:
+ *           type: integer
+ *           description: new's id which the comment belongs
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *       example:
+ *         id: 2
+ *         body: Excelent
+ *         userId: 1
+ *         newId: 1
+ *         deletedAt: null
+ *         createdAt: 2017-07-21T17:32:28Z
+ *         updatedAt: 2017-07-21T17:32:28Z
  */
 
 /**
@@ -254,14 +286,47 @@ router.get("/:id", auth, verifyAdmin, NewController.findOne);
  *            description: the comment's id
  *     responses:
  *       200:
- *         description: OK - returns all comments
+ *         description: Successful request
  *         content:
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Get new'
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items:
+ *                      oneOf:
+ *                        - $ref: '#/components/schemas/Get comment'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       404:
- *         description: new not found
+ *         description: News not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
  *       500:
  *         description: Internal server error
  */
@@ -442,7 +507,11 @@ router.put(
  *                properties:
  *                  data:
  *                    type: object
- *                    $ref: '#/components/schemas/Get new'
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                        description: new's id
  *       403:
  *         description: Forbidden
  *         content:

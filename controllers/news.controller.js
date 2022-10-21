@@ -125,7 +125,11 @@ class NewController {
         where: { id },
       });
 
-      res.json({ data: { id: deletedNew } });
+      if (!deletedNew) {
+        return res.status(404).json({ message: "Not found" });
+      }
+
+      res.json({ data: { id: Number.parseInt(id) } });
     } catch (error) {
       next(err);
     }
