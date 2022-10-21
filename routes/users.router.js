@@ -1,37 +1,28 @@
-const express = require('express');
-const { checkSchema } = require('express-validator');
+const express = require("express");
+const { checkSchema } = require("express-validator");
 
-const ownership = require('../middlewares/ownership');
-const verifyAdmin = require('../middlewares/admin');
+const ownership = require("../middlewares/ownership");
+const verifyAdmin = require("../middlewares/admin");
 
-const { updateUserSchema } = require('../schemas/user.schema');
-const auth = require('../middlewares/auth');
-const UserController = require('../controllers/user.controller');
+const { updateUserSchema } = require("../schemas/user.schema");
+const auth = require("../middlewares/auth");
+const UserController = require("../controllers/users.controller");
 const router = express.Router();
 
 /* GET users listing. */
 
-router.get('/', 
-  auth,
-  verifyAdmin, 
-  UserController.getUsers
-);
+router.get("/", auth, verifyAdmin, UserController.getUsers);
 
-router.post('/register', UserController.createUser);
+router.post("/register", UserController.createUser);
 
 router.patch(
-  '/:id',
+  "/:id",
   auth,
   ownership,
   checkSchema(updateUserSchema),
-  UserController.partialUpdateUser,
+  UserController.partialUpdateUser
 );
 
-router.delete(
-  '/:id', 
-  auth,
-  ownership,
-  UserController.deleteUser
-);
+router.delete("/:id", auth, ownership, UserController.deleteUser);
 
 module.exports = router;
