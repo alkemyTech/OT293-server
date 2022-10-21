@@ -2,7 +2,7 @@ const express = require("express");
 const { checkSchema } = require("express-validator");
 
 const NewController = require("../controllers/news.controller");
-const { createNewSchema } = require("../schemas/new.schema");
+const { createNewSchema, updateNewSchema } = require("../schemas/new.schema");
 const { dataValidator } = require("../middlewares/validator");
 const verifyAdmin = require("../middlewares/admin");
 const auth = require("../middlewares/auth");
@@ -197,7 +197,10 @@ router.get("/", auth, verifyAdmin, NewController.findAll);
  *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/Get new'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get new'
  *       403:
  *         description: Forbidden
  *         content:
@@ -219,7 +222,7 @@ router.get("/", auth, verifyAdmin, NewController.findAll);
  *                    type: string
  *                    example: Unauthorization. Please log in
  *       404:
- *         description: news not found
+ *         description: News not found
  *         content:
  *           application/json:
  *              schema:
@@ -355,12 +358,64 @@ router.post(
  *             $ref: '#/components/schemas/Update new'
  *     responses:
  *       200:
- *         description: news has been updated
+ *         description: new updated
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get new'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       404:
- *         description: news not found
+ *         description: News not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
+ *       500:
+ *         description: Internal server error
  */
 
-router.put("/:id", auth, verifyAdmin, NewController.update);
+router.put(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(updateNewSchema),
+  dataValidator,
+  NewController.update
+);
 
 /**
  * @swagger
@@ -379,9 +434,45 @@ router.put("/:id", auth, verifyAdmin, NewController.update);
  *            description: the news id
  *     responses:
  *       200:
- *         description: news has been deleted
+ *         description: Ok
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/Get new'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       404:
- *         description: news not found
+ *         description: new not found
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Not found
  *       500:
  *         description: Internal server error
  */

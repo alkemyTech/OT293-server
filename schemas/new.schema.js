@@ -3,7 +3,7 @@
  * The schemas are passed to the function checkSchema()
  */
 
- const createNewSchema = {
+const createNewSchema = {
   name: {
     in: "body",
     notEmpty: {
@@ -44,6 +44,41 @@
   },
 };
 
+const updateNewSchema = {
+  name: {
+    in: "body",
+    trim: true,
+    optional: true,
+    isString: {
+      errorMessage: "It must be a string",
+    },
+  },
+  content: {
+    in: "body",
+    trim: true,
+    optional: true,
+    isString: {
+      errorMessage: "It must be a string",
+    },
+  },
+  image: {
+    in: "body",
+    trim: true,
+    optional: true,
+    isURL: {
+      errorMessage: "It must be an url",
+    },
+  },
+  categoryId: {
+    in: "body",
+    optional: true,
+    isInt: {
+      errorMessage: "It must be a Number",
+    },
+  },
+};
+
 module.exports = {
   createNewSchema,
+  updateNewSchema,
 };
