@@ -1,10 +1,10 @@
-const db = require('../models/index');
+const db = require("../models/index");
 
 class BackOfficeController {
   static async findAllContacts(req, res, next) {
     try {
-      const contacts = await db.Contact.findAll();
-      res.json(contacts);
+      const contacts = await db.Contacts.findAll();
+      res.json({ data: contacts });
     } catch (e) {
       next(e);
     }
