@@ -4,25 +4,17 @@ const db = require("../models/index");
 class TestimonialsController {
   static async create(req, res, next) {
     try {
-      const { name, content } = req.body;
-      if (!name && !content) {
-        return res
-          .status(404)
-          .json({ message: "Name and content are required" });
-      }
       const existentTestimonial = await db.Testimonials.findOne({
         where: { name: name.toLowerCase() },
       });
 
       if (existentTestimonial) {
-        res.status(404).json({ message: "Testimonial already exists" });
-      } else {
-        const newTestimonial = await db.Testimonials.create({
-          name,
-          content,
-        });
-        res.json(newTestimonial);
+        return res.status(404).json({ message: "Testimonial already exists" });
       }
+
+      const newTestimonial = await db.Testimonials.create(req.body);
+
+      res.status(201).json({ data: newTestimonial });
     } catch (err) {
       next(err);
     }

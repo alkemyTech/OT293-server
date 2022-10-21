@@ -3,11 +3,46 @@ const router = express.Router();
 const verifyAdmin = require("../middlewares/admin");
 const TestimonialsController = require("../controllers/testimonials.controller.js");
 const auth = require("../middlewares/auth");
+const { checkSchema } = require("express-validator");
+const { createTestimonialSchema } = require("../schemas/testimonial.schema");
+const { dataValidator } = require("../middlewares/validator");
 
 /**
  * @swagger
  * components:
  *   schemas:
+ *     getTestimonial:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: testimonial's id
+ *         name:
+ *           type: string
+ *           description: person who wrote the testimonial
+ *         image:
+ *           type: string
+ *           description: testimonial's image
+ *         content:
+ *           type: string
+ *           description: testimonial's content
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *       example:
+ *         id: 1
+ *         name: John Doe
+ *         image: https://myimage.com/photo.jpg
+ *         content: so good
+ *         updatedAt: 2017-07-21T17:32:28Z
+ *         createdAt: 2017-07-21T17:32:28Z
+ *         deletedAt: null
  *     createTestimonial:
  *       type: object
  *       properties:
@@ -15,24 +50,29 @@ const auth = require("../middlewares/auth");
  *           type: string
  *           description: Name of the testimonial
  *           example: John Doe
+ *         image:
+ *           type: string
+ *           description: testimonial's image
+ *           example: https://myimage.com/photo.jpg
  *         content:
  *           type: string
  *           description: Content of the testimonial
  *           example: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  *       required:
- *       - name
- *       - content
+ *         - name
+ *         - image
+ *         - content
  *     updateTestimonial:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *           description: Id of the testimonial
- *           example: 1
  *         name:
  *           type: string
  *           description: New name of the testimonial
  *           example: John Doe
+ *         image:
+ *           type: string
+ *           description: testimonial's image
+ *           example: https://myimage.com/photo.jpg
  *         content:
  *           type: string
  *           description: New content of the testimonial
@@ -101,27 +141,54 @@ router.get("/", auth, TestimonialsController.findAll);
  *              type: object
  *              $ref: '#/components/schemas/createTestimonial'
  *     responses:
- *       200:
- *         description: The testimonial was successfully created
+ *       201:
+ *         description: Testimonial has been created
  *         content:
- *            application/json:
+ *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/createTestimonial'
- *       404:
- *         description: Not found
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/getTestimonial'
+ *       403:
+ *         description: Forbidden
  *         content:
- *            application/json:
+ *           application/json:
  *              schema:
  *                type: object
  *                properties:
  *                  message:
  *                    type: string
- *                    example: Name and content are required
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
  *       500:
  *         description: Internal server error
  */
-router.post("/", auth, verifyAdmin, TestimonialsController.create);
+router.post(
+  "/",
+  auth,
+  verifyAdmin,
+  checkSchema(createTestimonialSchema),
+  dataValidator,
+  TestimonialsController.create
+);
 
 /**
  * @swagger
