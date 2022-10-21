@@ -4,11 +4,7 @@ class ContactsController {
   static async findAll(req, res, next) {
     try {
       const container = db.Contacts.findAll();
-      if (container.length) {
-        res.json({ data: container });
-      } else {
-        res.status(404).send("No existen contactos creados");
-      }
+      res.json({ data: container });
     } catch (e) {
       next(e);
     }
