@@ -12,6 +12,7 @@ const CategoriesController = require("../controllers/categories.controller");
 const auth = require("../middlewares/auth");
 const verifyAdmin = require("../middlewares/admin");
 const { dataValidator } = require("../middlewares/validator");
+const { uploadImage } = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
@@ -291,6 +292,7 @@ router.post(
   verifyAdmin,
   checkSchema(createCategorySchema),
   dataValidator,
+  uploadImage,
   CategoriesController.create
 );
 
