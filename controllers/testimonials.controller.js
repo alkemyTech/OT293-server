@@ -1,3 +1,4 @@
+const { pagination } = require("../helpers/pagination");
 const db = require("../models/index");
 
 class TestimonialsController {
@@ -19,7 +20,7 @@ class TestimonialsController {
         const newTestimonial = await db.Testimonials.create({
           name,
           content,
-        })
+        });
         res.json(newTestimonial);
       }
     } catch (err) {
@@ -28,42 +29,11 @@ class TestimonialsController {
   }
 
   static async findAll(req, res, next) {
-    let { page } = req.query;
-    page = parseInt(page);
-    if (!page) {
-      page = 1;
-    }
-    const limitPage = 10;
-    const offsetPage = 10 * (page - 1);
-    const { count, rows } = await db.Testimonials.findAndCountAll({});
-    const ultimaPagina = count % limitPage == 0 ? 0 : 1;
-    const maxPage = Math.floor(count / 10) + ultimaPagina;
-
-    const URL = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
-
-    if (page > maxPage || page <= 0) {
-      const response = {
-        nextPage: null,
-        items: [],
-        previousPage: null,
-      };
-      res.status(404).json(response);
-    } else {
-      await db.Testimonials.findAll({
-        limit: limitPage,
-        offset: offsetPage,
-      })
-        .then((items) => {
-          const response = {
-            nextPage: page > maxPage ? null : `${URL}?page=${page++}`,
-            items: items,
-            previousPage: page == 1 ? null : `${URL}?page=${page--}`,
-          };
-          return res.status(200).json(response);
-        })
-        .catch((err) => {
-          return res.status(500).json(err);
-        });
+    try {
+      const testimonials = await pagination(req, "Testimonials");
+      res.json(testimonials);
+    } catch (error) {
+      next(error);
     }
   }
 

@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const verifyAdmin = require('../middlewares/admin');
-const TestimonialsController = require('../controllers/testimonials.controllers.js');
-const auth = require('../middlewares/auth');
+const verifyAdmin = require("../middlewares/admin");
+const TestimonialsController = require("../controllers/testimonials.controller.js");
+const auth = require("../middlewares/auth");
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ const auth = require('../middlewares/auth');
  *     updateTestimonial:
  *       type: object
  *       properties:
- *         id: 
+ *         id:
  *           type: integer
  *           description: Id of the testimonial
  *           example: 1
@@ -51,7 +51,7 @@ const auth = require('../middlewares/auth');
  *   description: Testimonials endpoint
  */
 
-/** 
+/**
  * @swagger
  * /testimonials:
  *   get:
@@ -68,14 +68,14 @@ const auth = require('../middlewares/auth');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/createTestimonial'
- * 
+ *
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               properties: 
+ *               properties:
  *                 message:
  *                   type: string
  *                   example: Unauthorization. Please log in
@@ -83,10 +83,7 @@ const auth = require('../middlewares/auth');
  *         description: Internal server error
  */
 
-router.get('/', 
-  auth,
-  TestimonialsController.findAll
-);
+router.get("/", auth, TestimonialsController.findAll);
 
 /**
  * @swagger
@@ -117,21 +114,16 @@ router.get('/',
  *            application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Name and content are required
  *       500:
  *         description: Internal server error
  */
-router.post(
-  '/', 
-  auth,
-  verifyAdmin, 
-  TestimonialsController.create
-)
+router.post("/", auth, verifyAdmin, TestimonialsController.create);
 
-/** 
+/**
  * @swagger
  * /testimonials/{id}:
  *   put:
@@ -160,7 +152,7 @@ router.post(
  *            application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Unauthorization. Please log in
@@ -170,30 +162,25 @@ router.post(
  *            application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
- * 
+ *
  *       404:
  *         description: Not found
  *         content:
  *            application/json:
  *              schema:
  *                type: object
- *                properties: 
+ *                properties:
  *                  message:
  *                    type: string
  *                    example: Testimonial not found
  *       500:
  *         description: Internal server error
-*/
-router.put(
-  '/:id', 
-  auth,
-  verifyAdmin, 
-  TestimonialsController.update
-)
+ */
+router.put("/:id", auth, verifyAdmin, TestimonialsController.update);
 
 /**
  * @swagger
@@ -210,7 +197,7 @@ router.put(
  *          type: integer
  *        required: true
  *        description: Id from the testimonial to delete
- * 
+ *
  *      responses:
  *        200:
  *          description: Successful request
@@ -228,7 +215,7 @@ router.put(
  *             application/json:
  *               schema:
  *                 type: object
- *                 properties: 
+ *                 properties:
  *                   message:
  *                     type: string
  *                     example: Unauthorization. Please log in
@@ -238,7 +225,7 @@ router.put(
  *             application/json:
  *               schema:
  *                 type: object
- *                 properties: 
+ *                 properties:
  *                   message:
  *                     type: string
  *                     example: You are not authorized to access this resource
@@ -248,7 +235,7 @@ router.put(
  *             application/json:
  *               schema:
  *                 type: object
- *                 properties: 
+ *                 properties:
  *                   message:
  *                     type: string
  *                     example: No existe un testimonial con ese ID
@@ -256,11 +243,6 @@ router.put(
  *          description: Internal server error
  */
 
-router.delete('/:id', 
-  auth,
-  verifyAdmin, 
-  TestimonialsController.delete
-);
-
+router.delete("/:id", auth, verifyAdmin, TestimonialsController.delete);
 
 module.exports = router;
