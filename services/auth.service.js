@@ -3,6 +3,7 @@ const sgMail = require('@sendgrid/mail');
 
 const Jwt = require('../utils/jwt');
 const welcomeEmail = require('../templates/welcomeEmail');
+const { getSignUrl } = require('../utils/s3');
 
 // Models
 const db = require('../models/index');
@@ -75,10 +76,18 @@ class AuthService {
   }
 
   static async getUserById(id) {
-    const user = db.User.findByPk(id, {
+    const user = await db.User.findByPk(id, {
       attributes: ['firstName', 'lastName', 'image', 'email'],
     });
-    return user;
+
+    // Get image url from AWS S3
+    const filename = user.dataValues.image;
+    const imageUrl = await getSignUrl(filename)
+
+    return { 
+      ...user.dataValues,
+      image: imageUrl 
+    };
   }
 }
 

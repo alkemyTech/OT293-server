@@ -6,7 +6,7 @@ class uploadController {
     try {
       const { file } = req.files;
       await uploadfile(file);
-      const url = await getSignUrl(file);
+      const url = await getSignUrl(file.name);
       res.send({ url });
     } catch (e) {
       next(e);

@@ -26,10 +26,10 @@ const uploadfile = async (file) => {
   return await client.send(command);
 };
 
-const getSignUrl = async (file) => {
+const getSignUrl = async (filename) => {
   const command = new GetObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `${file.name}`,
+    Key: filename,
   });
   return await getSignedUrl(client, command, { expiresIn: 3600 });
 };
