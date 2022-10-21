@@ -4,7 +4,10 @@ const verifyAdmin = require("../middlewares/admin");
 const TestimonialsController = require("../controllers/testimonials.controller.js");
 const auth = require("../middlewares/auth");
 const { checkSchema } = require("express-validator");
-const { createTestimonialSchema } = require("../schemas/testimonial.schema");
+const {
+  createTestimonialSchema,
+  updateTestimonialSchema,
+} = require("../schemas/testimonial.schema");
 const { dataValidator } = require("../middlewares/validator");
 
 /**
@@ -216,14 +219,24 @@ router.post(
  *           type: integer
  *         required: true
  *         description: Id from the testimonial to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              $ref: '#/components/schemas/updateTestimonial'
  *     responses:
  *       200:
  *         description: Successful request
  *         content:
- *            application/json:
+ *           application/json:
  *              schema:
  *                type: object
- *                $ref: '#/components/schemas/updateTestimonial'
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    $ref: '#/components/schemas/getTestimonial'
  *       401:
  *         description: Unauthorized
  *         content:
@@ -244,7 +257,13 @@ router.post(
  *                  message:
  *                    type: string
  *                    example: You are not authorized to access this resource
- *
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Validation bad-request'
  *       404:
  *         description: Not found
  *         content:
@@ -258,7 +277,14 @@ router.post(
  *       500:
  *         description: Internal server error
  */
-router.put("/:id", auth, verifyAdmin, TestimonialsController.update);
+router.put(
+  "/:id",
+  auth,
+  verifyAdmin,
+  checkSchema(updateTestimonialSchema),
+  dataValidator,
+  TestimonialsController.update
+);
 
 /**
  * @swagger

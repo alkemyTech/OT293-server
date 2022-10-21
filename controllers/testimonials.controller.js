@@ -36,19 +36,14 @@ class TestimonialsController {
   static async update(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, content } = req.body;
       const testimonial = await db.Testimonials.findByPk(id);
 
       if (!testimonial) {
-        res.status(404).json({ message: "Testimonial not found" });
-      } else {
-        const updatedTestimonial = await testimonial.set({
-          name: name,
-          content: content,
-        });
-        await updatedTestimonial.save();
-        res.json(updatedTestimonial);
+        return res.status(404).json({ message: "Testimonial not found" });
       }
+
+      const updatedTestimonial = await testimonial.update(req.body);
+      res.json({ data: updatedTestimonial });
     } catch (err) {
       next(err);
     }

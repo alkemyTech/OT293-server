@@ -11,6 +11,7 @@ const createTestimonialSchema = {
   },
   image: {
     in: "body",
+    optional: true,
     trim: true,
     isURL: {
       errorMessage: "It must be an url",
@@ -18,6 +19,34 @@ const createTestimonialSchema = {
   },
   content: {
     in: "body",
+    optional: true,
+    trim: true,
+    isString: {
+      errorMessage: "It must be a string",
+    },
+  },
+};
+
+const updateTestimonialSchema = {
+  name: {
+    in: "body",
+    optional: true,
+    trim: true,
+    isString: {
+      errorMessage: "It must be a string",
+    },
+  },
+  image: {
+    in: "body",
+    optional: true,
+    trim: true,
+    isURL: {
+      errorMessage: "It must be an url",
+    },
+  },
+  content: {
+    in: "body",
+    optional: true,
     trim: true,
     isString: {
       errorMessage: "It must be a string",
@@ -27,4 +56,5 @@ const createTestimonialSchema = {
 
 module.exports = {
   createTestimonialSchema,
+  updateTestimonialSchema,
 };
