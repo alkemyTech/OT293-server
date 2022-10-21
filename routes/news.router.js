@@ -1,11 +1,12 @@
-const express = require("express");
-const { checkSchema } = require("express-validator");
+const express = require('express');
+const { checkSchema } = require('express-validator');
 
-const NewController = require("../controllers/news.controller");
-const { createNewSchema, updateNewSchema } = require("../schemas/new.schema");
-const { dataValidator } = require("../middlewares/validator");
-const verifyAdmin = require("../middlewares/admin");
-const auth = require("../middlewares/auth");
+const NewController = require('../controllers/news.controller');
+const { createNewSchema, updateNewSchema } = require('../schemas/new.schema');
+const { dataValidator } = require('../middlewares/validator');
+const verifyAdmin = require('../middlewares/admin');
+const auth = require('../middlewares/auth');
+const { uploadImage } = require('../middlewares/uploadImage');
 
 const router = express.Router();
 
@@ -206,7 +207,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/", auth, verifyAdmin, NewController.findAll);
+router.get('/', auth, verifyAdmin, NewController.findAll);
 
 /**
  * @swagger
@@ -268,7 +269,7 @@ router.get("/", auth, verifyAdmin, NewController.findAll);
  *         description: Internal server error
  */
 
-router.get("/:id", auth, verifyAdmin, NewController.findOne);
+router.get('/:id', auth, verifyAdmin, NewController.findOne);
 
 /**
  * @swagger
@@ -332,7 +333,7 @@ router.get("/:id", auth, verifyAdmin, NewController.findOne);
  *         description: Internal server error
  */
 
-router.get("/:id/comments", auth, NewController.findComments);
+router.get('/:id/comments', auth, NewController.findComments);
 
 /**
  * @swagger
@@ -345,10 +346,19 @@ router.get("/:id/comments", auth, NewController.findComments);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Create new'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               categoryId:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: News has been created
@@ -392,11 +402,12 @@ router.get("/:id/comments", auth, NewController.findComments);
  */
 
 router.post(
-  "/",
+  '/',
   auth,
   verifyAdmin,
   checkSchema(createNewSchema),
   dataValidator,
+  uploadImage,
   NewController.create
 );
 
@@ -418,10 +429,19 @@ router.post(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Update new'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               categoryId:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: new updated
@@ -475,11 +495,12 @@ router.post(
  */
 
 router.put(
-  "/:id",
+  '/:id',
   auth,
   verifyAdmin,
   checkSchema(updateNewSchema),
   dataValidator,
+  uploadImage,
   NewController.update
 );
 
@@ -547,6 +568,6 @@ router.put(
  *         description: Internal server error
  */
 
-router.delete("/:id", auth, verifyAdmin, NewController.delete);
+router.delete('/:id', auth, verifyAdmin, NewController.delete);
 
 module.exports = router;

@@ -1,5 +1,7 @@
-const { pagination } = require("../helpers/pagination");
-const db = require("../models/index");
+const { pagination } = require('../helpers/pagination');
+const { getSignUrl } = require('../utils/s3');
+
+const db = require('../models/index');
 
 class NewController {
   constructor() {}
@@ -14,7 +16,7 @@ class NewController {
 
   static async findAll(req, res, next) {
     try {
-      const page = await pagination(req, "New");
+      const page = await pagination(req, 'New');
       res.json(page);
     } catch (error) {
       next(error);
@@ -34,7 +36,7 @@ class NewController {
       const newsDetail = await db.New.findByPk(id);
 
       if (!newsDetail) {
-        return res.status(404).json({ message: "Not found" });
+        return res.status(404).json({ message: 'Not found' });
       }
       res.status(200).json({ data: newsDetail });
     } catch (e) {
@@ -55,11 +57,11 @@ class NewController {
       const { id } = req.params;
 
       const post = await db.New.findByPk(id, {
-        include: ["comments"],
+        include: ['comments'],
       });
 
       if (!post) {
-        return res.status(404).json({ message: "New not found" });
+        return res.status(404).json({ message: 'New not found' });
       }
 
       res.json({ data: post.comments });
@@ -79,7 +81,13 @@ class NewController {
     try {
       const { body } = req;
       const newNews = await db.New.create(body);
-      res.status(201).json({ data: newNews });
+
+      // Get image url form AWS
+      const imageUrl = await getSignUrl(newNews.dataValues.image);
+
+      res
+        .status(201)
+        .json({ data: { ...newNews.dataValues, image: imageUrl } });
     } catch (e) {
       next(e);
     }
@@ -99,12 +107,17 @@ class NewController {
       const findNew = await db.New.findByPk(id);
 
       if (!findNew) {
-        return res.status(404).json({ message: "New Not Found" });
+        return res.status(404).json({ message: 'New Not Found' });
       }
 
       const updateNew = await findNew.update(changes);
 
-      res.status(200).json({ data: updateNew });
+      // Get image url form AWS
+      const imageUrl = await getSignUrl(updateNew.dataValues.image);
+
+      res
+        .status(200)
+        .json({ data: { ...updateNew.dataValues, image: imageUrl } });
     } catch (error) {
       next(error);
     }
@@ -126,7 +139,7 @@ class NewController {
       });
 
       if (!deletedNew) {
-        return res.status(404).json({ message: "Not found" });
+        return res.status(404).json({ message: 'Not found' });
       }
 
       res.json({ data: { id: Number.parseInt(id) } });

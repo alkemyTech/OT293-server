@@ -23,16 +23,6 @@ const createNewSchema = {
       errorMessage: "It must be a string",
     },
   },
-  image: {
-    in: "body",
-    notEmpty: {
-      errorMessage: "It must not be empty",
-    },
-    isURL: {
-      errorMessage: "It must be an url",
-    },
-    trim: true,
-  },
   categoryId: {
     in: "body",
     notEmpty: {
@@ -59,14 +49,6 @@ const updateNewSchema = {
     optional: true,
     isString: {
       errorMessage: "It must be a string",
-    },
-  },
-  image: {
-    in: "body",
-    trim: true,
-    optional: true,
-    isURL: {
-      errorMessage: "It must be an url",
     },
   },
   categoryId: {
