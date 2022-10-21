@@ -291,6 +291,26 @@ router.get("/:id/comments", auth, NewController.findComments);
  *                  data:
  *                    type: object
  *                    $ref: '#/components/schemas/Get new'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: You are not authorized to access this resource
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Unauthorization. Please log in
  *       400:
  *         description: Bad request
  *         content:
