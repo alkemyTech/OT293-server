@@ -55,12 +55,14 @@ class TestimonialsController {
       const container = await db.Testimonials.findOne({ where: { id: id } });
       if (container) {
         await db.Testimonials.destroy({ where: { id: id } });
-        res.send("Testimonial eliminado correctamente");
+        res.json({ data: { id: Number.parseInt(id) } });
       } else {
-        res.status(404).send("No existe un testimonial con ese ID");
+        res
+          .status(404)
+          .json({ message: "No existe un testimonial con ese ID" });
       }
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 }

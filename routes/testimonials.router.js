@@ -304,15 +304,19 @@ router.put(
  *
  *      responses:
  *        200:
- *          description: Successful request
- *          content:
- *             application/json:
- *               schema:
- *                 type: object
- *                 properties:
- *                   message:
- *                     type: string
- *                     example: Testimonial eliminado correctamente
+ *         description: Ok
+ *         content:
+ *           application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                        description: new's id
  *        401:
  *          description: Unauthorized
  *          content:
