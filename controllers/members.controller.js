@@ -1,13 +1,14 @@
-"use strict";
-const { pagination } = require("../helpers/pagination");
-const db = require("../models/index");
+'use strict';
+const { pagination } = require('../helpers/pagination');
+const db = require('../models/index');
+const { uploadfile, getSignUrl } = require('../utils/s3');
 
 class MemberController {
   // Get all members
   // Method: GET
   static async findAll(req, res, next) {
     try {
-      const members = await pagination(req, "Member");
+      const members = await pagination(req, 'Member');
       res.status(200).json(members);
     } catch (err) {
       next(err);
@@ -22,8 +23,23 @@ class MemberController {
   // Method: POST
   static async create(req, res, next) {
     try {
-      const createMember = await db.Member.create(req.body);
-      res.status(201).json({ data: createMember });
+      const { body } = req;
+      const { file } = req.files;
+
+      // Upload image to AWS S3 and get singUrl
+      uploadfile(file);
+
+      const createMember = await db.Member.create({
+        ...body,
+        image: file.name,
+      });
+
+      // Get image url form AWS
+      const imageUrl = await getSignUrl(file.name);
+
+      res
+        .status(201)
+        .json({ data: { ...createMember.dataValues, image: imageUrl } });
     } catch (error) {
       next(error);
     }
@@ -34,15 +50,26 @@ class MemberController {
   static async update(req, res, next) {
     try {
       const { id } = req.params;
-      const member = await db.Member.findByPk(id);
-
-      if (!member) {
-        return res.status(404).json({ message: "Not found" });
+      const { body } = req;
+      
+      if (req.files) {
+        // Upload image to AWS S3 and get singUrl
+        const { file } = req.files;
+        uploadfile(file);
+        body.image = file.name;
       }
 
-      const update = await member.update(req.body);
+      const member = await db.Member.findByPk(id);
+      if (!member) {
+        return res.status(404).json({ message: 'Not found' });
+      }
 
-      res.status(200).json({ data: update });
+      const update = await member.update(body);
+
+      // Get image url form AWS
+      const imageUrl = await getSignUrl(update.dataValues.image);
+
+      res.status(200).json({ data: { ...update.dataValues, image: imageUrl } });
     } catch (error) {
       next(error);
     }
@@ -56,7 +83,7 @@ class MemberController {
 
       const member = await db.Member.findByPk(id);
       if (!member) {
-        return res.status(404).json({ message: "Not found" });
+        return res.status(404).json({ message: 'Not found' });
       }
 
       await member.destroy();
