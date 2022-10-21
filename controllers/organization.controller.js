@@ -1,12 +1,20 @@
-const db = require('../models/index');
+const db = require("../models/index");
 
 class OrganizationController {
   static async findAll(req, res, next) {
     try {
       const organizations = await db.Organization.findAll({
-        attributes: ['name', 'image', 'phone', 'address', 'facebook_url', 'linkedin_url', 'instagram_url'],
+        attributes: [
+          "name",
+          "image",
+          "phone",
+          "address",
+          "facebook_url",
+          "linkedin_url",
+          "instagram_url",
+        ],
       });
-      res.json(organizations);
+      res.json({ data: organizations });
     } catch (e) {
       next(e);
     }
@@ -17,14 +25,13 @@ class OrganizationController {
       const { id } = req.params;
       const organization = await db.Organization.findByPk(id, {
         where: { id },
-        include: 'slides'
-      })
-      if(!organization){
-        res.status(404).json({msg: 'No existe Organizacion'})
+        include: "slides",
+      });
+      if (!organization) {
+        res.status(404).json({ msg: "No existe Organizacion" });
       }
-
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -37,7 +44,7 @@ class OrganizationController {
 
       const organization = await db.Organization.findByPk(id);
       if (!organization) {
-        res.status(404).json({ error: 'Organization Not Found' });
+        return res.status(404).json({ error: "Organization Not Found" });
       }
       await organization.update(body);
       res.json(organization);
