@@ -1,22 +1,33 @@
 const { pagination } = require("../helpers/pagination");
+const { getSignUrl } = require('../utils/s3');
+
 const db = require("../models/index");
 
 class TestimonialsController {
   static async create(req, res, next) {
     try {
-      const { name } = req.body;
+      const { name, content, image } = req.body;
 
-      const existentTestimonial = await db.Testimonials.findOne({
-        where: { name: name.toLowerCase() },
+      const [testimonial, created] = await db.Testimonials.findOrCreate({
+        where: { name },
+        defaults: {
+          name,
+          content,
+          image,
+        },
       });
 
-      if (existentTestimonial) {
-        return res.status(404).json({ message: "Testimonial already exists" });
+      if (created) {
+        //Get image url from aws
+        const imageUrl = await getSignUrl(image);
+        return res
+          .status(201)
+          .json({ data: { ...testimonial.dataValues, image: imageUrl } });
+      } else {
+        return res
+          .status(400)
+          .json({ message: `Testimonial: ${name} already exists` });
       }
-
-      const newTestimonial = await db.Testimonials.create(req.body);
-
-      res.status(201).json({ data: newTestimonial });
     } catch (err) {
       next(err);
     }
@@ -43,7 +54,11 @@ class TestimonialsController {
       }
 
       const updatedTestimonial = await testimonial.update(req.body);
-      res.json({ data: updatedTestimonial });
+
+      //Get image url from aws
+      const imageUrl = await getSignUrl(updatedTestimonial.dataValues.image);
+
+      res.json({ data: { ...updatedTestimonial.dataValues, image: imageUrl } });
     } catch (err) {
       next(err);
     }

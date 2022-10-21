@@ -1,14 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const verifyAdmin = require("../middlewares/admin");
-const TestimonialsController = require("../controllers/testimonials.controller.js");
-const auth = require("../middlewares/auth");
-const { checkSchema } = require("express-validator");
+const verifyAdmin = require('../middlewares/admin');
+const TestimonialsController = require('../controllers/testimonials.controller.js');
+const auth = require('../middlewares/auth');
+const { checkSchema } = require('express-validator');
 const {
   createTestimonialSchema,
   updateTestimonialSchema,
-} = require("../schemas/testimonial.schema");
-const { dataValidator } = require("../middlewares/validator");
+} = require('../schemas/testimonial.schema');
+const { dataValidator } = require('../middlewares/validator');
+const { uploadImage } = require('../middlewares/uploadImage');
 
 /**
  * @swagger
@@ -145,7 +146,7 @@ const { dataValidator } = require("../middlewares/validator");
  *         description: Internal server error
  */
 
-router.get("/", auth, TestimonialsController.findAll);
+router.get('/', auth, TestimonialsController.findAll);
 
 /**
  * @swagger
@@ -158,10 +159,17 @@ router.get("/", auth, TestimonialsController.findAll);
  *     requestBody:
  *       required: true
  *       content:
- *          application/json:
- *            schema:
- *              type: object
- *              $ref: '#/components/schemas/createTestimonial'
+ *          multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               content:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Testimonial has been created
@@ -204,11 +212,12 @@ router.get("/", auth, TestimonialsController.findAll);
  *         description: Internal server error
  */
 router.post(
-  "/",
+  '/',
   auth,
   verifyAdmin,
   checkSchema(createTestimonialSchema),
   dataValidator,
+  uploadImage,
   TestimonialsController.create
 );
 
@@ -230,10 +239,17 @@ router.post(
  *     requestBody:
  *       required: true
  *       content:
- *          application/json:
- *            schema:
- *              type: object
- *              $ref: '#/components/schemas/updateTestimonial'
+ *          multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               content:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Successful request
@@ -286,11 +302,12 @@ router.post(
  *         description: Internal server error
  */
 router.put(
-  "/:id",
+  '/:id',
   auth,
   verifyAdmin,
   checkSchema(updateTestimonialSchema),
   dataValidator,
+  uploadImage,
   TestimonialsController.update
 );
 
@@ -359,6 +376,6 @@ router.put(
  *          description: Internal server error
  */
 
-router.delete("/:id", auth, verifyAdmin, TestimonialsController.delete);
+router.delete('/:id', auth, verifyAdmin, TestimonialsController.delete);
 
 module.exports = router;
