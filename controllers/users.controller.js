@@ -1,14 +1,14 @@
-const db = require('../models/index');
-const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
-const Jwt = require('../utils/jwt');
+const db = require("../models/index");
+const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
+const Jwt = require("../utils/jwt");
 
 class UserController {
-  constructor() { }
+  constructor() {}
 
   // Get all user
   // Method: GET
-  static async getUsers(req, res, next) {
+  static async findAll(req, res, next) {
     try {
       const users = await db.User.findAll();
       res.json({ data: users });
@@ -19,11 +19,11 @@ class UserController {
 
   // Get User by id
   // Method: GET
-  static async getUserById(req, res) { }
+  static async findOne(req, res) {}
 
   // Create new User
   // Method: POST
-  static async createUser(req, res, next) {
+  static async create(req, res, next) {
     try {
       const token = await Jwt.tokenSign({ ...req.body });
       res.json({ data: { token } });
@@ -32,41 +32,39 @@ class UserController {
     }
   }
 
-  // Update all User data
-  // Method: PUT
-  static async updateUser(req, res) { }
-
   // Partially update User data
   // Method: PATCH
-  static async partialUpdateUser(req, res, next) { 
+  static async update(req, res, next) {
     try {
-
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-          return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      if (req.body.roleId && req.user.roleId == 2) {
+        delete req.body.roleId;
       }
 
       const { id } = req.params;
 
       const user = await db.User.findByPk(id);
 
-      if(!user) {
-          return res.status(404).json({message: 'Not found'});
+      if (!user) {
+        return res.status(404).json({ message: "Not found" });
       }
 
       // If request has password
 
       const { password } = req.body;
 
-      if(password) { 
-          req.body.password = await bcrypt.hash(password, 10);
+      if (password) {
+        req.body.password = await bcrypt.hash(password, 10);
       }
 
       const updatedUser = await user.update(req.body);
 
-      res.json({data: updatedUser});
-      
+      res.json({ data: updatedUser });
     } catch (e) {
       next(e);
     }
@@ -74,7 +72,7 @@ class UserController {
 
   // Delete User from DB
   // Method: DELETE
-  static async deleteUser(req, res, next) {
+  static async delete(req, res, next) {
     try {
       const { id } = req.params;
 

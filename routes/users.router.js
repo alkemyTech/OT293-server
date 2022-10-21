@@ -11,18 +11,18 @@ const router = express.Router();
 
 /* GET users listing. */
 
-router.get("/", auth, verifyAdmin, UserController.getUsers);
+router.get("/", auth, verifyAdmin, UserController.findAll);
 
-router.post("/register", UserController.createUser);
+router.post("/register", UserController.create);
 
 router.patch(
   "/:id",
   auth,
   ownership,
   checkSchema(updateUserSchema),
-  UserController.partialUpdateUser
+  UserController.update
 );
 
-router.delete("/:id", auth, ownership, UserController.deleteUser);
+router.delete("/:id", auth, ownership, UserController.delete);
 
 module.exports = router;
