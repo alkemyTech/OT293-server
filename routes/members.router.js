@@ -1,15 +1,16 @@
-const express = require("express");
+const express = require('express');
 
-const auth = require("../middlewares/auth");
-const verifyAdmin = require("../middlewares/admin");
-const { checkSchema } = require("express-validator");
+const auth = require('../middlewares/auth');
+const verifyAdmin = require('../middlewares/admin');
+const { checkSchema } = require('express-validator');
 const {
   deleteMemberSchema,
   createMemberSchema,
   updateMemberSchema,
-} = require("../schemas/member.schema");
-const { dataValidator } = require("../middlewares/validator");
-const MemberController = require("../controllers/members.controller");
+} = require('../schemas/member.schema');
+const { dataValidator } = require('../middlewares/validator');
+const MemberController = require('../controllers/members.controller');
+const { uploadImage } = require('../middlewares/uploadImage');
 
 const router = express.Router();
 
@@ -176,7 +177,7 @@ const router = express.Router();
  *         description: Internal server error
  */
 
-router.get("/", auth, verifyAdmin, MemberController.findAll);
+router.get('/', auth, verifyAdmin, MemberController.findAll);
 
 /**
  * @swagger
@@ -249,11 +250,12 @@ router.get("/", auth, verifyAdmin, MemberController.findAll);
  */
 
 router.post(
-  "/",
+  '/',
   auth,
   verifyAdmin,
   checkSchema(createMemberSchema),
   dataValidator,
+  uploadImage,
   MemberController.create
 );
 
@@ -323,7 +325,7 @@ router.post(
  */
 
 router.delete(
-  "/:id",
+  '/:id',
   auth,
   verifyAdmin,
   checkSchema(deleteMemberSchema),
@@ -348,10 +350,23 @@ router.delete(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Member Request Put'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               facebookUrl:
+ *                 type: string
+ *               instagramUrl:
+ *                 type: string
+ *               linkedinUrl:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     tags: [Members]
  *     responses:
  *       200:
@@ -406,11 +421,12 @@ router.delete(
  */
 
 router.put(
-  "/:id",
+  '/:id',
   auth,
   verifyAdmin,
   checkSchema(updateMemberSchema),
   dataValidator,
+  uploadImage,
   MemberController.update
 );
 

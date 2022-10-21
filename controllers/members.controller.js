@@ -24,18 +24,11 @@ class MemberController {
   static async create(req, res, next) {
     try {
       const { body } = req;
-      const { file } = req.files;
 
-      // Upload image to AWS S3 and get singUrl
-      uploadfile(file);
-
-      const createMember = await db.Member.create({
-        ...body,
-        image: file.name,
-      });
+      const createMember = await db.Member.create(body);
 
       // Get image url form AWS
-      const imageUrl = await getSignUrl(file.name);
+      const imageUrl = await getSignUrl(createMember.dataValues.image);
 
       res
         .status(201)
@@ -52,13 +45,6 @@ class MemberController {
       const { id } = req.params;
       const { body } = req;
       
-      if (req.files) {
-        // Upload image to AWS S3 and get singUrl
-        const { file } = req.files;
-        uploadfile(file);
-        body.image = file.name;
-      }
-
       const member = await db.Member.findByPk(id);
       if (!member) {
         return res.status(404).json({ message: 'Not found' });
