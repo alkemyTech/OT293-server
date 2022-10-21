@@ -16,14 +16,8 @@ class AuthController {
   // Returns token with new user's information
   static async register(req, res, next) {
     try {
-      const { file } = req.files;
       const { body } = req;
-
-      // Upload image to s3
-      uploadfile(file);
-
-      const data = { ...body, image: file.name };
-      const token = await AuthService.registerUser(data);
+      const token = await AuthService.registerUser(body);
       res.json({ token });
     } catch (err) {
       next(err);

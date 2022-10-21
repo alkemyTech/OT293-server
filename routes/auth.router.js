@@ -5,6 +5,7 @@ const AuthController = require("../controllers/auth.controller");
 const { loginSchema, registerSchema } = require("../schemas/auth.schema");
 const { dataValidator } = require("../middlewares/validator");
 const auth = require("../middlewares/auth");
+const { uploadImage } = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
@@ -137,6 +138,7 @@ router.post(
   "/register",
   checkSchema(registerSchema),
   dataValidator,
+  uploadImage,
   AuthController.register
 );
 
