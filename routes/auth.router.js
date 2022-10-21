@@ -39,7 +39,6 @@ const router = express.Router();
  *       required:
  *         - email
  *         - password
- *         - image
  *         - firstName
  *         - lastName
  *       example:
@@ -62,8 +61,8 @@ const router = express.Router();
  *         - email
  *         - password
  *       example:
- *         email: email@email.com
- *         password: 1a2s23d4gf5
+ *         email: admin1@mail.com
+ *         password: admin 1
  *     Profile:
  *       type: object
  *       properties:
@@ -102,10 +101,22 @@ const router = express.Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             $ref: '#/components/schemas/Register user'
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *     responses:
  *       200:
  *         description: User has been registered
