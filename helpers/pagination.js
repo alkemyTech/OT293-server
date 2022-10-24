@@ -9,6 +9,7 @@ const pagination = async (req, model) => {
   const response = await db[model].findAndCountAll({
     limit: size,
     offset: (page - 1) * size,
+    attributes: ["name", "description"],
   });
 
   const totalPages = Math.ceil(response.count / size);

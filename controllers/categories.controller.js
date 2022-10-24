@@ -83,13 +83,10 @@ class CategoriesController {
       if (!category) {
         return res.status(404).json({ error: 'Category not found' });
       }
-      const isDeleted = await db.Categories.destroy({ where: { id } });
-      if (!isDeleted) {
-        return res.status(500).json({ error: 'Category could not be deleted' });
-      }
+      await db.Categories.destroy({ where: { id } });
       res.json({
         data: {
-          id: idDeleted.id,
+          destroy: true,
         },
       });
     } catch (e) {

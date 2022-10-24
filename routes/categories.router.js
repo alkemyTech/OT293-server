@@ -161,7 +161,6 @@ const router = express.Router();
 router.get(
   "/",
   auth,
-  verifyAdmin,
   checkSchema(getCategoriesByPage),
   CategoriesController.findAll
 );
@@ -225,7 +224,7 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.get("/:id", auth, verifyAdmin, CategoriesController.findOne);
+router.get("/:id", auth, CategoriesController.findOne);
 
 /**
  * @swagger

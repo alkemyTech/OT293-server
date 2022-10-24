@@ -5,59 +5,63 @@
 
 const loginSchema = {
   email: {
-    in: "body",
+    in: 'body',
     notEmpty: {
-      errorMessage: "It must not be empty",
+      errorMessage: 'It must not be empty',
     },
     isEmail: {
-      errorMessage: "It must be a valid email",
+      errorMessage: 'It must be a valid email',
     },
     trim: true,
   },
   password: {
-    in: "body",
+    in: 'body',
     isLength: {
-      errorMessage: "Password should be at least 7 chars long",
-      options: { min: 5 },
+      errorMessage: 'Password should be at least 7 chars long',
+      options: { min: 7 },
     },
   },
 };
 
 const registerSchema = {
   email: {
-    in: "body",
+    in: 'body',
     notEmpty: {
-      errorMessage: "It must not be empty",
+      errorMessage: 'It must not be empty',
     },
     isEmail: {
-      errorMessage: "It must be a valid email",
+      errorMessage: 'It must be a valid email',
     },
     trim: true,
   },
   password: {
-    in: "body",
+    in: 'body',
     isLength: {
-      errorMessage: "Password should be at least 7 chars long",
-      options: { min: 5 },
+      errorMessage: 'Password should be at least 7 chars long',
+      options: { min: 7 },
+    },
+    matches: {
+      errorMessage: 'Password should have an integer',
+      options: /\d/,
     },
   },
   firstName: {
-    in: "body",
+    in: 'body',
     notEmpty: {
-      errorMessage: "It must not be empty",
+      errorMessage: 'It must not be empty',
     },
     isString: {
-      errorMessage: "It must be a string",
+      errorMessage: 'It must be a string',
     },
     trim: true,
   },
   lastName: {
-    in: "body",
+    in: 'body',
     notEmpty: {
-      errorMessage: "It must not be empty",
+      errorMessage: 'It must not be empty',
     },
     isString: {
-      errorMessage: "It must be a string",
+      errorMessage: 'It must be a string',
     },
     trim: true,
   },
