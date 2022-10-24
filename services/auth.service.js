@@ -53,7 +53,12 @@ class AuthService {
   static async sendWelcomeEmail(email) {
     const title = "¡Bienvenid@s a nuestra ONG!";
     const text = "Cualquier duda que tengas, no dudes en contactarnos";
-    const contact = "";
+    const contact = {
+      mail: 'somos_mas@mail.com',
+      instagram: '@somos_mas',
+      facebook: 'somos_mas',
+      phone: 'xxx-xxx-xxx',
+    };
 
     const message = {
       to: email,
